@@ -1,0 +1,9 @@
+Flask
+Flask-Caching
+flask-cors
+Flask-Dance[sqla]
+flask-login
+flask_sqlalchemy
+gevent
+gunicorn
+SQLAlchemy==1.3.20

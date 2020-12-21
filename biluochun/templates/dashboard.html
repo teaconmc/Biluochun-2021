@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+{% block content %}
+    <h1>登录成功</h1>
+    <section>
+    <p>Welcome back, His Excellency {{ user.name }}. </p>
+    {% if user.team == none %}
+        <p> You are currently not in any team. </p>
+    {% else %}
+        <p> You are currently in team {{ user.team.name }}. </p>
+    {% endif %}
+    </section>
+    <section>
+        <form>
+            <label for="name">Display name</label>
+            <input type="text" id="name"></input>
+        </form>
+    </section>
+{% endblock %}

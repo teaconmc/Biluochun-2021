@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <link rel="stylesheet" href="/static/css/base.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/article.css" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TeaCon 2021 - another online modding trial, where you can learn writing minecraft mods and involve into open-source community">
+    <meta name="keywords" content="teacon,tea con,tea-con,Mod开发茶会,Mod 开发茶会,mod开发茶会,minecraft,mc,minecraft mod,mc mod,modded minecraft,modded mc,modding,modjam,open source,open-source,opensource,hackathon">
+  
+    <title>{% block title %}{% endblock %} - TeaCon 2021</title>
+    {% endblock %}
+</head>
+<body>
+  <main><article>{% block content %}{% endblock %}</article></main>
+  <footer>
+    <small>
+      <p class="contact-us">
+        <a href="https://invite.gg/teacon" title="加入我们的 Discord 频道">
+          <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-discord"></use>
+          </svg>
+        </a>
+        <a href="https://space.bilibili.com/627604706" title="访问我们的 B 站空间">
+          <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-bilibili"></use>
+          </svg>
+        </a>
+        <a href="https://github.com/teaconmc" title="访问我们的 GitHub 主页">
+          <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-github"></use>
+          </svg>
+        </a>
+      </p>
+      <p>&copy; 2021 TeaCon Committee members</p>
+      <em>非 Minecraft 官方产品。未获 Mojang 许可，亦与 Mojang 无任何关联。</em>
+      <br />
+      <span lang="en">NOT OFFICIAL MINECRAFT PRODUCT. NOT APPROVED BY OR ASSOCIATED WITH MOJANG.</span>
+    </small>
+  </footer>
+  <script src="https://at.alicdn.com/t/font_1927399_cm6p07gg4yi.js"></script>
+  <script src="js/sidebar.js"></script>
+</body>
+</html>
