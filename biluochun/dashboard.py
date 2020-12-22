@@ -1,8 +1,29 @@
 from .api import summary
 from .model import Team, User, db
-from flask import Blueprint, redirect, render_template, url_for
+from flask import Blueprint, redirect, send_file, url_for
 from flask_dance.contrib.azure import azure
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
+from flask_wtf import FlaskForm
+from flask_wtf.file import FileAllowed, FileField, FileRequired
+from flaskext.uploads import UploadSet, IMAGES
+from io import BytesIO
+from PIL import Image
+from wtforms import StringField
+from wtforms.validators import DataRequired, URL, ValidationError
+
+class UserInfo(FlaskForm):
+    name = StringField('name', validators = [ DataRequired() ])
+    profile_pic = FileField(validators = [ FileRequired(), FileAllowed(UploadSet(extensions = IMAGES) ])
+    team = IntegerField('team', validators = [ validate_team ])
+
+    def validate_team(form, field):
+        if Team.query.get(field.data) == None:
+            raise ValidationError(f"Team #{field.data} does not exist")
+
+class TeamInfo(FlaskForm):
+    name = StringField('name', validators = [ DataRequired() ])
+    desc = StringField('desc')
+    repo = StringField('repo', validators = [ URL() ])
 
 def init_dashboard(app):
     bp = Blueprint('dashboard', __name__, url_prefix = '/dashboard')
@@ -44,4 +65,34 @@ def init_dashboard(app):
     def main_page():
         return { 'name': current_user.name, 'team': summary(user.team) if not user.team == None else None }
     
+    def cleanse_profile_pic(raw):
+        '''
+        Read the image and convert to png format regardless.
+        '''
+        img = Image.open(raw)
+        cleansed = BytesIO()
+        img.save(cleansed, format = 'png')
+        return cleansed.getvalue()
+
+    @bp.route('/avatar')
+    @bp.route('/profile_pic')
+    @login_required
+    def get_profile_pic():
+        return send_file(BytesIO(current_user.profile_pic), mime = 'image/png')
+    
+    @bp.route('/update', methods = [ 'POST' ])
+    def update_personal_info():
+        form = UserInfo()
+        if form.validate_on_submit():
+            try:
+                current_user.name = form.name.data
+                current_user.profile_pic = cleanse_profile_pic(form.profile_pic.data)
+                current_user.team_id = form.team.data
+                db.session.commit()
+                return {}
+            except e:
+                return { 'error': 'Error occured while updating info.' }, 500
+        else:
+            return { 'error': 'Form contains error. Check that you have entered a valid display name and a valid team number.'}, 400
+
     app.register_blueprint(bp)

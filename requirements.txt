@@ -4,6 +4,9 @@ flask-cors
 Flask-Dance[sqla]
 flask-login
 flask_sqlalchemy
+Flask-WTF
 gevent
 gunicorn
+Pillow
 SQLAlchemy==1.3.20
+WTForms

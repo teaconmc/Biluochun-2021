@@ -12,6 +12,7 @@ db = SQLAlchemy()
 class Team(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.Text, nullable = False, unique = True)
+    profile_pic = db.Column(db.LargeBinary)
     description = db.Column(db.Text)
     repo = db.Column(db.Text, unique = True)
     members = db.relationship('User', backref = 'user', lazy = True)
@@ -22,6 +23,7 @@ class Team(db.Model):
 class User(db.Model, flask_login.UserMixin):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.Text, nullable = False, unique = True)
+    profile_pic = db.Column(db.LargeBinary)
     team_id = db.Column(db.Integer, db.ForeignKey("team.id"))
     team = db.relationship(Team)
 
