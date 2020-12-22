@@ -1,24 +1,25 @@
 from .api import summary
-from .model import Team, User, db
+from .model import OAuth, Team, User, db
 from flask import Blueprint, redirect, send_file, url_for
+from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
 from flask_dance.contrib.azure import azure
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
+from flask_uploads import UploadSet, IMAGES
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField, FileRequired
-from flaskext.uploads import UploadSet, IMAGES
 from io import BytesIO
 from PIL import Image
-from wtforms import StringField
+from wtforms import IntegerField, StringField
 from wtforms.validators import DataRequired, URL, ValidationError
+
+def validate_team(form, field):
+    if Team.query.get(field.data) == None:
+        raise ValidationError(f"Team #{field.data} does not exist")
 
 class UserInfo(FlaskForm):
     name = StringField('name', validators = [ DataRequired() ])
-    profile_pic = FileField(validators = [ FileRequired(), FileAllowed(UploadSet(extensions = IMAGES) ])
+    profile_pic = FileField(validators = [ FileRequired(), FileAllowed(UploadSet(extensions = IMAGES)) ])
     team = IntegerField('team', validators = [ validate_team ])
-
-    def validate_team(form, field):
-        if Team.query.get(field.data) == None:
-            raise ValidationError(f"Team #{field.data} does not exist")
 
 class TeamInfo(FlaskForm):
     name = StringField('name', validators = [ DataRequired() ])
@@ -63,7 +64,7 @@ def init_dashboard(app):
     @bp.route('/')
     @login_required
     def main_page():
-        return { 'name': current_user.name, 'team': summary(user.team) if not user.team == None else None }
+        return { 'name': current_user.name, 'team': None if current_user.team == None else summary(current_user.team) }
     
     def cleanse_profile_pic(raw):
         '''
@@ -95,4 +96,5 @@ def init_dashboard(app):
         else:
             return { 'error': 'Form contains error. Check that you have entered a valid display name and a valid team number.'}, 400
 
+    bp.storage = SQLAlchemyStorage(OAuth, db.session, user = current_user)
     app.register_blueprint(bp)
