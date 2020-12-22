@@ -1,6 +1,6 @@
 from .api import summary
 from .model import OAuth, Team, User, db
-from flask import Blueprint, redirect, send_file, url_for
+from flask import Blueprint, Response, redirect, send_file, url_for
 from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
 from flask_dance.contrib.azure import azure
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
@@ -79,7 +79,11 @@ def init_dashboard(app):
     @bp.route('/profile_pic')
     @login_required
     def get_profile_pic():
-        return send_file(BytesIO(current_user.profile_pic), mime = 'image/png')
+        img = current_user.profile_pic
+        if img == None or len(img) == 0:
+            return Response(None, 204)
+        else:
+            return send_file(BytesIO(img), mimetype = 'image/png')
     
     @bp.route('/update', methods = [ 'POST' ])
     def update_personal_info():
