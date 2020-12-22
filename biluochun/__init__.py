@@ -9,13 +9,15 @@ from flask_cors import CORS
 import hashlib
 import secrets
 
+# Random secret key, used for preventing CSRF and others
+secret = hashlib.sha256(b"\x00" + secrets.token_bytes(30) + b"\x00").hexdigest()
+
 def create_app():
     app = Flask(__name__)
     app.config.from_envvar('BILUOCHUN_CONFIG_PATH')
     # Wrapped with CORS
     CORS(app)
-    # Random secret key, used for preventing CSRF and others
-    app.secret_key = hashlib.sha256(b"\x00" + secrets.token_bytes(30) + b"\x00").hexdigest()
+    app.secret_key = secret
 
     init_db(app)
     init_authz(app)
