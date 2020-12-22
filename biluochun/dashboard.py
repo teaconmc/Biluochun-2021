@@ -1,6 +1,6 @@
-from .model import OAuth, Team, User, db
+from .api import summary
+from .model import Team, User, db
 from flask import Blueprint, redirect, render_template, url_for
-from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
 from flask_dance.contrib.azure import azure
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 
@@ -26,9 +26,9 @@ def init_dashboard(app):
                 db.session.add(user)
                 db.session.commit()
             login_user(user)
-            return redirect(url_for('.main_page'))
+            return {}
         else:
-            return redirect(url_for('index'))
+            return { 'error': 'Not logged in yet' }, 401
 
     @bp.route('/logout')
     @login_required
@@ -42,7 +42,6 @@ def init_dashboard(app):
     @bp.route('/')
     @login_required
     def main_page():
-        return render_template('dashboard.html', user = current_user)
+        return { 'name': current_user.name, 'team': summary(user.team) if not user.team == None else None }
     
-    bp.storage = SQLAlchemyStorage(OAuth, db.session, user = current_user)
     app.register_blueprint(bp)
