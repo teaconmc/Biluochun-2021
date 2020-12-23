@@ -11,7 +11,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_envvar('BILUOCHUN_CONFIG_PATH')
     # Wrapped with CORS
-    CORS(app)
+    CORS(app, supports_credentials = True)
 
     init_db(app)
     init_authz(app)
