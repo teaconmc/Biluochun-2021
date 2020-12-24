@@ -25,6 +25,10 @@ or configure HTTPS for your local server (what?!)
 
 ## Available endpoints
 
+### `GET /`
+
+Always gives you `200 OK` with empty JSON Object `{}`. Serves as a simple, crude health check.
+
 ### `GET /api/team`
 
 Retrieves all known teams. The response is always `200 OK` with a JSON Array that looks like
