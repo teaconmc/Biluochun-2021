@@ -63,7 +63,7 @@ Otherwise, it will return `404 Not Found` with
 }
 ```
 
-### `GET /team/<team_name>/avatar`
+### `GET /api/team/<team_name>/avatar`
 
 Retrieve avatar (aka profile picture) of a specific team.
 
@@ -79,11 +79,11 @@ If the team has set an avatar, this endpoint will give you `200 OK`, and MIME ty
 response is `image/png`.
 Otherwise, a `204 No Content` will be returned.
 
-### `GET /team/<team_name>/icon`
+### `GET /api/team/<team_name>/icon`
 
 Synonym of `GET /team/<team_name>/avatar`.
 
-### `GET /team/<team_name>/profile_pic`
+### `GET /api/team/<team_name>/profile_pic`
 
 Synonym of `GET /team/<team_name>/avatar`.
 
