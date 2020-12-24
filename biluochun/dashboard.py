@@ -1,29 +1,13 @@
 from .api import summary
+from .form import TeamInfo, UserInfo
 from .model import OAuth, Team, User, db
 from flask import Blueprint, Response, redirect, send_file, url_for
 from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
 from flask_dance.contrib.azure import azure
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
-from flask_wtf import FlaskForm
-from flask_wtf.file import FileAllowed, FileField, FileRequired
 from io import BytesIO
 from PIL import Image
-from wtforms import IntegerField, StringField
-from wtforms.validators import DataRequired, URL, ValidationError
-
-def validate_team(form, field):
-    if field.data != None and Team.query.get(field.data) == None:
-        raise ValidationError(f"Team #{field.data} does not exist")
-
-class UserInfo(FlaskForm):
-    name = StringField('name', validators = [ DataRequired() ])
-    profile_pic = FileField(validators = [ FileRequired(), FileAllowed([ 'jpg', 'jpe', 'jpeg', 'png', 'gif', 'svg', 'bmp', 'webp' ]) ])
-    team = IntegerField('team', validators = [ validate_team ])
-
-class TeamInfo(FlaskForm):
-    name = StringField('name', validators = [ DataRequired() ])
-    desc = StringField('desc')
-    repo = StringField('repo', validators = [ URL() ])
+from sqlalchemy import func
 
 def init_dashboard(app):
     bp = Blueprint('dashboard', __name__, url_prefix = '/dashboard')
@@ -87,6 +71,7 @@ def init_dashboard(app):
             return send_file(BytesIO(img), mimetype = 'image/png')
     
     @bp.route('/update', methods = [ 'POST' ])
+    @login_required
     def update_personal_info():
         form = UserInfo()
         if form.validate_on_submit():
@@ -96,10 +81,43 @@ def init_dashboard(app):
                 current_user.team_id = form.team.data
                 db.session.commit()
                 return {}
-            except e:
-                return { 'error': 'Error occured while updating info.' }, 500
+            except Exception as e:
+                return { 'error': 'Error occured while updating info.', 'details': str(e) }, 500
         else:
-            return { 'error': 'Form contains error. Check that you have entered a valid display name and a valid team number.'}, 400
+            return { 'error': 'Form contains error. Check "details" field for more information.', 'details': form.errors }, 400
+
+    @bp.route('/team/new', methods = [ 'POST' ])
+    @login_required
+    def create_team():
+        if current_user.team_id == None or current_user.team_id <= 0:
+            next_id = db.session.query(func.max(Team.id)) + 1
+            new_team = Team(next_id, f"{current_user.name}'s team")
+            db.session.add(new_team)
+            current_user.team_id = next_id
+            db.session.commit()
+        else:
+            return { 'error': 'You have already been in a team!' }, 400
+
+    @bp.route('/team/update', methods = [ 'POST' ])
+    @login_required
+    def update_team_info():
+        if current_user.team_id == None or current_user.team_id <= 0:
+            return { 'error': 'You are not in a team yet!' }, 400
+
+        form = TeamInfo()
+        if form.validate_on_submit():
+            try:
+                team = current_user.team
+                team.name = form.name.data
+                team.profile_pic = cleanse_profile_pic(form.profile_pic.data)
+                team.description = form.description.data
+                team.repo = form.repo.data
+                db.session.commit()
+                return {}
+            except Exception as e:
+                return { 'error': 'Error occured while updating info.', 'details': str(e) }, 500
+        else:
+            return { 'error': 'Form contains error. Check "details" field for more information.', 'details': form.errors }, 400
 
     bp.storage = SQLAlchemyStorage(OAuth, db.session, user = current_user)
     app.register_blueprint(bp)
