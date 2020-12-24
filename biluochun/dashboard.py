@@ -48,7 +48,7 @@ def init_dashboard(app):
                 db.session.add(user)
                 db.session.commit()
             login_user(user)
-            return {}
+            return {} # TODO Redirect back to front-end
         else:
             return { 'error': 'Not logged in yet' }, 401
 
@@ -62,9 +62,11 @@ def init_dashboard(app):
         return redirect("https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=" + url_for("index", _external=True))
 
     @bp.route('/')
-    @login_required
     def main_page():
-        return { 'name': current_user.name, 'team': None if current_user.team == None else summary(current_user.team) }
+        if current_user.is_anonymous:
+            return { 'error': 'Not logged in yet' }
+        else:
+            return { 'name': current_user.name, 'team': None if current_user.team == None else summary(current_user.team) }
     
     def cleanse_profile_pic(raw):
         '''
