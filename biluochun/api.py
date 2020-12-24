@@ -27,7 +27,7 @@ def init_api(app):
     @bp.route('/team/<team_name>/avatar')
     @bp.route('/team/<team_name>/icon')
     @bp.route('/team/<team_name>/profile_pic')
-    def get_team_icon():
+    def get_team_icon(team_name):
         team = Team.query.filter_by(name = team_name).first()
         if team == None:
             return { 'error': 'No such team' }, 404
