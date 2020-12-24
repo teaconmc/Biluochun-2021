@@ -95,6 +95,7 @@ def init_dashboard(app):
             db.session.add(new_team)
             current_user.team_id = next_id
             db.session.commit()
+            return {}
         else:
             return { 'error': 'You have already been in a team!' }, 400
 
