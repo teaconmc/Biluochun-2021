@@ -4,7 +4,6 @@ from flask import Blueprint, Response, redirect, send_file, url_for
 from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
 from flask_dance.contrib.azure import azure
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
-from flask_uploads import UploadSet, IMAGES
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField, FileRequired
 from io import BytesIO
@@ -13,12 +12,12 @@ from wtforms import IntegerField, StringField
 from wtforms.validators import DataRequired, URL, ValidationError
 
 def validate_team(form, field):
-    if Team.query.get(field.data) == None:
+    if field.data != None and Team.query.get(field.data) == None:
         raise ValidationError(f"Team #{field.data} does not exist")
 
 class UserInfo(FlaskForm):
     name = StringField('name', validators = [ DataRequired() ])
-    profile_pic = FileField(validators = [ FileRequired(), FileAllowed(UploadSet(extensions = IMAGES)) ])
+    profile_pic = FileField(validators = [ FileRequired(), FileAllowed([ 'jpg', 'jpe', 'jpeg', 'png', 'gif', 'svg', 'bmp', 'webp' ]) ])
     team = IntegerField('team', validators = [ validate_team ])
 
 class TeamInfo(FlaskForm):

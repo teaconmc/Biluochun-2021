@@ -4,7 +4,6 @@ flask-cors
 Flask-Dance[sqla]
 flask-login
 flask_sqlalchemy
-Flask-Reuploaded
 Flask-WTF
 gevent
 gunicorn
