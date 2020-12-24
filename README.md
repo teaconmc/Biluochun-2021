@@ -31,9 +31,9 @@ Retrieves all known teams. The response is always `200 OK` with a JSON Array tha
 
 ```json
 [
-  { "name": "Team A", "repo", "https://github.com/teaconmc/AreaControl" },
-  { "name": "Team B", "repo", "https://github.com/teaconmc/ChromeBall" },
-  { "name": "Team C", "repo", "https://github.com/teaconmc/SlideShow" },
+  { "name": "Team A", "repo": "https://github.com/teaconmc/AreaControl" },
+  { "name": "Team B", "repo": "https://github.com/teaconmc/ChromeBall" },
+  { "name": "Team C", "repo": "https://github.com/teaconmc/SlideShow" },
 ]
 ```
 
@@ -47,7 +47,7 @@ be `200 OK` with a JSON Object that looks like
 ```json
 {
   "name": "Team B", 
-  "repo", "https://github.com/teaconmc/ChromeBall"
+  "repo": "https://github.com/teaconmc/ChromeBall"
 }
 ```
 
@@ -59,7 +59,7 @@ Otherwise, it will return `404 Not Found` with
 }
 ```
 
-### `GET /team/<team_name>/avatar`, `GET /team/<team_name>/icon`, `/team/<team_name>/profile_pic`
+### `GET /team/<team_name>/avatar`
 
 Retrieve avatar (aka profile picture) of a specific team.
 
@@ -74,6 +74,14 @@ If the team does not exist, it will return `404 Not Found` with
 If the team has set an avatar, this endpoint will give you `200 OK`, and MIME type for the
 response is `image/png`.
 Otherwise, a `204 No Content` will be returned.
+
+### `GET /team/<team_name>/icon`
+
+Synonym of `GET /team/<team_name>/avatar`.
+
+### `GET /team/<team_name>/profile_pic`
+
+Synonym of `GET /team/<team_name>/avatar`.
 
 ### `GET /login/azure`
 
@@ -107,7 +115,7 @@ If the current user does not belong to a team, `team` field will be `null`.
 
 REQUIRES a logged-in user; otherwise `401 Unauthorized` will be returned.
 
-### `GET /dashboard/avatar/`, `GET /dashboard/profile_pic`
+### `GET /dashboard/avatar/`
 
 Retrieve current user's avatar (aka profile picture). 
 
@@ -116,6 +124,10 @@ response is `image/png`.
 Otherwise, a `204 No Content` will be returned.
 
 REQUIRES a logged-in user; otherwise `401 Unauthorized` will be returned.
+
+### `GET /dashboard/profile_pic`
+
+Synonym of `GET /dashboard/profile_pic`.
 
 ### `POST /dashboard/update`
 
