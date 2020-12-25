@@ -3,8 +3,6 @@ from flask_login import current_user
 
 def init_authz(app):
     bp = make_azure_blueprint(
-        client_id = app.config['BILUOCHUN_OAUTH_CLIENT_ID'],
-        client_secret = app.config['BILUOCHUN_OAUTH_CLIENT_SECRET'],
         # TODO: Check if we do need XboxLive.signin scope/permission
         scope = 'User.Read',
         redirect_to = 'dashboard.login',
