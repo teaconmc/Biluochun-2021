@@ -97,9 +97,11 @@ OAuth callback endpoint. You should not call this.
 Microsoft, or Azure Active Directory to be more precise, will call this for you. 
 You will be redirect to `/dashboard/`.
 
-### `GET /dashboard/logout`
+### `POST /dashboard/logout`
 
-Sign out from our system. Will redirect back to Microsoft's logout system to fully sign-out.
+Sign out from our system. You do not need any particular payload.
+
+Will redirect back to Microsoft's logout system to fully sign-out.
 
 ### `GET /dashboard/`
 

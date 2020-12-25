@@ -31,11 +31,11 @@ def init_dashboard(app):
                 db.session.add(user)
                 db.session.commit()
             login_user(user)
-            return {} # TODO Redirect back to front-end
+            return redirect('.main_page')
         else:
             return { 'error': 'Not logged in yet' }, 401
 
-    @bp.route('/logout')
+    @bp.route('/logout', methods = [ 'POST' ])
     @login_required
     def logout():
         # Log out local account
