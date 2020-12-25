@@ -6,7 +6,7 @@ SECRET_KEY = hashlib.sha512(b"BILUOCHUN").hexdigest()
 
 # Client ID of your Azure Active Directory (AAD) App. It is in form of UUID/GUID.
 AZURE_OAUTH_CLIENT_ID = None
-# Client secret of your AAD App. Ensure it is 
+# Client secret of your AAD App. KEEP IT SECRET!
 AZURE_OAUTH_CLIENT_SECRET = None
 
 # URL that points to your SQL database. SQLite is used here for dev purpose.
