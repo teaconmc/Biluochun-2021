@@ -9,8 +9,10 @@ def validate_team(form, field):
 
 class UserInfo(FlaskForm):
     name = StringField('name')
-    profile_pic = FileField('profile_pic', validators = [ FileAllowed([ 'jpg', 'jpe', 'jpeg', 'png', 'gif', 'svg', 'bmp', 'webp' ]), Optional() ])
     team = IntegerField('team', validators = [ validate_team ])
+
+class UserAvatar(FlaskForm):
+    avatar = FileField('avatar', validators = [ FileAllowed([ 'jpg', 'jpe', 'jpeg', 'png', 'gif', 'svg', 'bmp', 'webp' ]) ])
 
 class TeamInfo(FlaskForm):
     name = StringField('name')

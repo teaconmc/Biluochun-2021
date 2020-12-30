@@ -1,5 +1,5 @@
 from .api import summary
-from .form import TeamInfo, UserInfo
+from .form import TeamInfo, UserAvatar, UserInfo
 from .model import OAuth, Team, User, db
 from flask import Blueprint, Response, redirect, send_file, url_for
 from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
@@ -31,7 +31,7 @@ def init_dashboard(app):
                 db.session.add(user)
                 db.session.commit()
             login_user(user)
-            return redirect('.main_page')
+            return redirect(url_for('.main_page'))
         else:
             return { 'error': 'Not logged in yet' }, 401
 
@@ -63,12 +63,30 @@ def init_dashboard(app):
     @bp.route('/avatar')
     @bp.route('/profile_pic')
     @login_required
-    def get_profile_pic():
+    def get_avatar():
         img = current_user.profile_pic
         if img == None or len(img) == 0:
             return Response(None, 204)
         else:
             return send_file(BytesIO(img), mimetype = 'image/png')
+
+    @bp.route('/avatar', methods = [ 'POST' ])
+    @bp.route('/profile_pic', methods = [ 'POST' ])
+    @login_required
+    def update_avatar():
+        raw_img = None
+        if form:
+            form = UserAvatarForm()
+            raw_img = form.avatar.data
+        else:
+            raw_img = request.stream # TODO Validate it
+            
+        if raw_img:
+            current_user.profile_pic = cleanse_profile_pic(raw_img)
+            db.session.commit()
+            return {}
+        else:
+            return { 'error': 'No valid image file found. Check if you forget to put an image file in request body?' }, 400
     
     @bp.route('/update', methods = [ 'POST' ])
     @login_required
@@ -77,7 +95,6 @@ def init_dashboard(app):
         if form.validate_on_submit():
             try:
                 current_user.name = form.name.data
-                current_user.profile_pic = cleanse_profile_pic(form.profile_pic.data)
                 current_user.team_id = form.team.data
                 db.session.commit()
                 return {}
