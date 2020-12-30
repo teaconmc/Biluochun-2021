@@ -8,5 +8,6 @@ Flask-WTF
 gevent
 gunicorn
 Pillow
+pyjwt
 SQLAlchemy==1.3.20
 WTForms
