@@ -2,7 +2,7 @@ from .model import User, db
 from datetime import datetime, timedelta, timezone
 from flask import redirect, url_for
 from flask_dance.contrib.azure import azure, make_azure_blueprint
-from flask_login import LoginManager, current_user
+from flask_login import LoginManager
 import jwt
 
 def init_authz(app):
@@ -31,7 +31,6 @@ def init_authz(app):
                 user = get_user(data['uid'])
                 return user
             except Exception as e:
-                print(e)
                 return None
         else:
             return None
