@@ -16,5 +16,6 @@ class UserAvatar(FlaskForm):
 
 class TeamInfo(FlaskForm):
     name = StringField('name')
+    mod_name = StringField('mod_name')
     desc = StringField('desc')
     repo = StringField('repo', validators = [ URL(), Optional() ])

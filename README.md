@@ -64,7 +64,8 @@ be `200 OK` with a JSON Object that looks like
 
 ```json
 {
-  "name": "Team B", 
+  "name": "Team B",
+  "mod_name": "TeamBCraft",
   "repo": "https://github.com/teaconmc/ChromeBall"
 }
 ```
@@ -135,6 +136,7 @@ Will redirect back to Microsoft's logout system to fully sign-out.
   "name": "TeaCon Participtant A",
   "team": {
     "name": "Awesome Team 1",
+    "mod_name": "Team1Craft",
     "repo": "https://github.com/teaconmc/Biluochun"
   }
 }
@@ -228,6 +230,7 @@ POST request MUST include session data.
 The following fields are available:
 
   - `name`: the display name of the team, type `text`.
+  - `mod_name`: the display name of the mod created by this team, type `text`.
   - `profile_pic`: the avatar (aka profile picture) of the team, type `file`.
   - `description`: short (or long) descriptions for the team, type `text`. 
     Note for frontend dev: you might want a `<textarea>` for this one.

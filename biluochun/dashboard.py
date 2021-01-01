@@ -101,6 +101,7 @@ def init_dashboard(app):
             try:
                 team = current_user.team
                 team.name = form.name.data
+                team.mod_name = form.mod_name.data
                 team.profile_pic = cleanse_profile_pic(form.profile_pic.data)
                 team.description = form.description.data
                 team.repo = form.repo.data
