@@ -12,6 +12,7 @@ db = SQLAlchemy()
 class Team(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.UnicodeText, nullable = False, unique = True)
+    mod_name = db.Column(db.UnicodeText, nullable = False, unique = True)
     profile_pic = db.Column(db.LargeBinary)
     description = db.Column(db.UnicodeText)
     repo = db.Column(db.Text, unique = True)

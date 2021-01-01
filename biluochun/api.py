@@ -4,7 +4,7 @@ from flask.json import jsonify
 from io import BytesIO
 
 def summary(team, detailed = False):
-    info = { 'name': team.name, 'repo': team.repo }
+    info = { 'name': team.name, 'mod_name': team.mod_name, 'repo': team.repo }
     if detailed:
         info['desc'] = team.description
     return info
@@ -22,7 +22,7 @@ def init_api(app):
         if team == None:
             return { 'error': 'No such team' }, 404
         else:
-            return summary(team)
+            return summary(team, detailed = True)
 
     @bp.route('/team/<team_name>/avatar')
     @bp.route('/team/<team_name>/icon')
