@@ -4,7 +4,7 @@ from flask.json import jsonify
 from io import BytesIO
 
 def summary(team, detailed = False):
-    info = { 'name': team.name, 'mod_name': team.mod_name, 'repo': team.repo }
+    info = { 'id': team.id, 'name': team.name, 'mod_name': team.mod_name, 'repo': team.repo }
     if detailed:
         info['desc'] = team.description
     return info
