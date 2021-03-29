@@ -20,6 +20,6 @@ def create_app():
 
     @app.route('/')
     def index():
-        return {} # Empty json, implying "everything functional"
+        return {} # Empty json, implying "it is at least running"
 
     return app
