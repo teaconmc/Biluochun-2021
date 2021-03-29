@@ -31,6 +31,9 @@ class User(db.Model, flask_login.UserMixin):
 
     def get_id(self):
         return self.id
+    
+    def __repr__(self):
+        return f"<User #{self.id} '{self.name}'"
 
 class OAuth(db.Model, OAuthConsumerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey(User.id))
