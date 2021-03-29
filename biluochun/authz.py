@@ -59,4 +59,4 @@ def init_authz(app):
         else:
             return { 'error': 'Not logged in yet' }, 401
 
-    app.register_blueprint(bp, url_prefix = '/login')
+    app.register_blueprint(bp, url_prefix = '/api/login')
