@@ -23,11 +23,11 @@ Env. var. `BILUOCHUN_CONFIG_PATH` points to the configuration file to be used.
 If test locally, either prepend `OAUTHLIB_INSECURE_TRANSPORT=1` to allow Authlib to use HTTP, 
 or configure HTTPS for your local server (what?!)
 
-## Available endpoints
+## Authorization
 
-Note that all endpoints under `/dashboard/` require a authorization token. It can be obtained from 
-`GET /login/azure` (which will redirects you to `/login/complete`). It is a JWT token; your request 
-MUST have the following header line when accessing endpoints in `/dashboard/`
+Some endpoints require a authorization token. It can be obtained from `GET /login/azure` (which 
+will redirects you to `/login/complete`). It is a JWT token; your request MUST have the following 
+header line when accessing those endpoints:
 
 ```
 Authorization: JWT <the token>
@@ -38,6 +38,29 @@ Otherwise, the response is `401 Unauthorized` with the following JSON object pay
 ```json
 { "error": "Not logged in yet" }
 ```
+
+### `GET /login/azure`
+
+Sign-in endpoint. Will redirects you to Microsoft's sign-in page.
+
+### `GET /login/complete`
+
+OAuth callback endpoint. You should not call this. 
+Microsoft, or Azure Active Directory to be more precise, will call this for you. 
+
+The response will look like 
+
+```json
+{
+  "token": "<jwt token>"
+}
+```
+
+Store the JWT token for later uses.
+
+## Available endpoints
+
+Any endpoints that require authorization will be noted with "Requires authorization".
 
 ### `GET /`
 
@@ -102,32 +125,7 @@ Synonym of `GET /team/<team_name>/avatar`.
 
 Synonym of `GET /team/<team_name>/avatar`.
 
-### `GET /login/azure`
-
-Sign-in endpoint. Will redirects you to Microsoft's sign-in page.
-
-### `GET /login/complete`
-
-OAuth callback endpoint. You should not call this. 
-Microsoft, or Azure Active Directory to be more precise, will call this for you. 
-
-The response will look like 
-
-```json
-{
-  "token": "<jwt token>"
-}
-```
-
-Store the JWT token for later uses.
-
-### `POST /dashboard/logout` _Deprecated_
-
-Sign out from our system. You do not need any particular payload.
-
-Will redirect back to Microsoft's logout system to fully sign-out.
-
-### `GET /dashboard/`
+### `GET /api/profile/`
 
 "Homepage"-ish endpoint, will give you this JSON that describes the currently logged-in user:
 
@@ -144,7 +142,7 @@ Will redirect back to Microsoft's logout system to fully sign-out.
 
 If the current user does not belong to a team, `team` field will be `null`.
 
-### `GET /dashboard/avatar/`
+### `GET /api/profile/avatar/`
 
 Retrieve current user's avatar (aka profile picture). 
 
@@ -152,11 +150,11 @@ If the user has set an avatar, this endpoint will give you `200 OK`, and MIME ty
 response is `image/png`. 
 Otherwise, a `204 No Content` will be returned.
 
-### `GET /dashboard/profile_pic`
+### `GET /api/profile/profile_pic`
 
 Synonym of `GET /dashboard/avatar`.
 
-### `POST /dashboard/avatar/`
+### `POST /api/profile/avatar/`
 
 Update current user's avatar (Aka profile picture).
 
@@ -177,11 +175,11 @@ Otherwise, it will return `400 Bad Request` with a JSON object that looks like
 }
 ```
 
-### `POST /dashboard/profile_pic`
+### `POST /api/profile/profile_pic`
 
 Synonym of `POST /dashboard/avatar`.
 
-### `POST /dashboard/update`
+### `POST /api/profile/`
 
 Update user's information for currently logged-in user. 
 
@@ -207,7 +205,7 @@ Otherwise, it will return `400 Bad Request` with a JSON object that looks like
 
 Note that `details` may be JSON String or JSON Object. 
 
-### `POST /dashboard/team/new`
+### `POST /api/team/`
 
 Creates a new team. The currently logged-in user MUST NOT belong to any other team. 
 This endpoint does not need any payload.
@@ -221,9 +219,9 @@ Otherwise, it will return `400 Bad Request` with a JSON object that looks like
 }
 ```
 
-### `POST /dashboard/team/update`
+### `POST /api/team/<team_name>`
 
-Update information for the team that currently logged-in user belongs to.
+Update information for the team with the specified name.
 
 Payload is `multipart/form-data`. Note that there is session-based CSRF protection, so the
 POST request MUST include session data.
