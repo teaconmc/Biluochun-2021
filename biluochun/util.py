@@ -14,7 +14,7 @@ def cleanse_profile_pic(raw):
 def find_team_by_invite(invite_code):
     return Team.query.filter_by(invite = invite_code).first()
 
-def summary(team, detailed = False):
+def team_summary(team, detailed = False):
     info = { 'id': team.id, 'name': team.name, 'mod_name': team.mod_name, 'repo': team.repo }
     if detailed:
         info['desc'] = team.description
