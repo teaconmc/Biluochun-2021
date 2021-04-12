@@ -41,7 +41,7 @@ def init_team_api(app):
         if team == None:
             return { 'error': 'No such team' }, 404
 
-        if current_user.team_id != team.id
+        if current_user.team_id != team.id:
             return { 'error': f"You are not in team '{team.name}'!" }, 400
 
         form = TeamInfo()
@@ -86,7 +86,7 @@ def init_team_api(app):
         if team == None:
             return { 'error': 'No such team' }, 404
 
-        if current_user.team_id != team.id
+        if current_user.team_id != team.id:
             return { 'error': f"You are not in team '{team.name}'!" }, 400
         
         raw_img = None
