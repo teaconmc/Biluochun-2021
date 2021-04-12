@@ -6,7 +6,7 @@ from flask.json import jsonify
 from flask_login import login_required
 from io import BytesIO
 
-def init_api(app):
+def init_team_api(app):
     bp = Blueprint('api', __name__, url_prefix = '/api/team')
     
     @bp.route('/', methods = [ 'GET' ])

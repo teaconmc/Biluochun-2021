@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from .api import init_api
+from .api import init_team_api
 from .authz import init_authz
 from .dashboard import init_dashboard
 from .model import init_db
@@ -16,7 +16,7 @@ def create_app():
     init_db(app)
     init_authz(app)
     init_dashboard(app)
-    init_api(app)
+    init_team_api(app)
 
     @app.route('/')
     def index():
