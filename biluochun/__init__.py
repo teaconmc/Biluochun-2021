@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from .api import init_team_api
 from .authz import init_authz
 from .dashboard import init_dashboard
 from .model import init_db
+from .team import init_team_api
 from flask import Flask
 from flask_cors import CORS
 
