@@ -1,10 +1,12 @@
 from .form import Avatar, TeamInfo
 from .model import Team, User, db
 from .util import cleanse_profile_pic, team_summary
-from flask import Blueprint, redirect, render_template, send_file, url_for
+from flask import Blueprint, redirect, request, send_file, url_for
 from flask.json import jsonify
-from flask_login import login_required
+from flask_login import current_user, login_required
 from io import BytesIO
+from sqlalchemy import func
+import secrets
 
 def init_team_api(app):
     bp = Blueprint('api', __name__, url_prefix = '/api/team')
@@ -50,7 +52,7 @@ def init_team_api(app):
                 team = current_user.team
                 team.name = form.name.data
                 team.mod_name = form.mod_name.data
-                team.description = form.description.data
+                team.description = form.desc.data
                 team.repo = form.repo.data
                 db.session.commit()
                 return {}

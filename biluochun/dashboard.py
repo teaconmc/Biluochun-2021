@@ -1,11 +1,10 @@
 from .form import Avatar, TeamInfo, UserInfo
 from .model import OAuth, Team, User, db
 from .util import cleanse_profile_pic, find_team_by_invite, team_summary
-from flask import Blueprint, Response, redirect, send_file, url_for
+from flask import Blueprint, Response, request, redirect, send_file, url_for
 from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
 from flask_login import current_user, login_required, logout_user
-import secrets
-from sqlalchemy import func
+from io import BytesIO
 
 def init_dashboard(app):
     bp = Blueprint('dashboard', __name__, url_prefix = '/api/profile')
