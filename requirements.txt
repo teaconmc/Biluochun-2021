@@ -11,3 +11,6 @@ Pillow
 pyjwt
 SQLAlchemy==1.3.20
 WTForms
+
+# Dev-only dependencies
+pylint
