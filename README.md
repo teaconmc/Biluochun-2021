@@ -39,11 +39,11 @@ Otherwise, the response is `401 Unauthorized` with the following JSON object pay
 { "error": "Not logged in yet" }
 ```
 
-### `GET /login/azure`
+### `GET /api/login/azure`
 
 Sign-in endpoint. Will redirects you to Microsoft's sign-in page.
 
-### `GET /login/complete`
+### `GET /api/login/complete`
 
 OAuth callback endpoint. You should not call this. 
 Microsoft, or Azure Active Directory to be more precise, will call this for you. 
