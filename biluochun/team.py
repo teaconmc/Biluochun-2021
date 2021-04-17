@@ -46,7 +46,7 @@ def init_team_api(app):
             return { 'error': 'You have already been in a team!' }, 400
 
     @bp.route('/<team_id>', methods = [ 'GET' ])
-    def list_team(team_id):
+    def show_team(team_id):
         team = Team.query.get(team_id)
         if team is None:
             return { 'error': 'No such team' }, 404

@@ -1,9 +1,8 @@
-from .model import User, db
-from datetime import datetime, timedelta, timezone
-from flask import redirect, url_for
+from flask import redirect
 from flask_dance.contrib.azure import azure, make_azure_blueprint
 from flask_login import LoginManager
-import jwt
+
+from .model import User, db
 
 def init_authz(app):
     bp = make_azure_blueprint(
@@ -18,22 +17,9 @@ def init_authz(app):
     login_manager.init_app(app)
 
     @login_manager.user_loader
-    def get_user(id):
+    def get_user(user_id):
         # id is the primary key, so we can do this
-        return User.query.get(id)
-
-    @login_manager.request_loader
-    def load_user_from_token(req):
-        auth = req.headers.get("Authorization")
-        if auth and auth.startswith('JWT '):
-            try:
-                data = jwt.decode(auth[4:], app.secret_key, algorithms = [ 'HS512' ])
-                user = get_user(data['uid'])
-                return user
-            except Exception as e:
-                return None
-        else:
-            return None
+        return User.query.get(user_id)
 
     @login_manager.unauthorized_handler
     def no_auth():
@@ -45,17 +31,12 @@ def init_authz(app):
             ms_profile = azure.get('/v1.0/me').json()
             uid = int(ms_profile['id'], 16)
             user = User.query.get(uid)
-            if user == None:
+            if user is None:
                 user = User(id = uid, name = ms_profile['displayName'])
                 db.session.add(user)
                 db.session.commit()
-            timestamp = datetime.now(timezone.utc)
-            token = jwt.encode({ 
-                'uid': uid,
-                'nbf': timestamp,
-                'exp': timestamp + timedelta(days = 1)
-            }, app.secret_key, algorithm = 'HS512')
-            return { 'token': token }
+            
+            return redirect(app.config['FRONTEND_URL'])
         else:
             return { 'error': 'Not logged in yet' }, 401
 

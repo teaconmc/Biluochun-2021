@@ -89,7 +89,8 @@ be `200 OK` with a JSON Object that looks like
 {
   "name": "Team B",
   "mod_name": "TeamBCraft",
-  "repo": "https://github.com/teaconmc/ChromeBall"
+  "repo": "https://github.com/teaconmc/ChromeBall",
+  "desc": "Lorem ipsum"
 }
 ```
 
