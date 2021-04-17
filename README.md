@@ -25,15 +25,15 @@ or configure HTTPS for your local server (what?!)
 
 ## Authorization
 
-Some endpoints require a authorization token. It can be obtained from `GET /login/azure` (which 
-will redirects you to `/login/complete`). It is a JWT token; your request MUST have the following 
-header line when accessing those endpoints:
+Some endpoints require authorization. It can be obtained via `GET /api/login/azure` (which 
+is the Microsoft OAuth2 login workflow). The authorization info is stored as session cookies. 
 
-```
-Authorization: JWT <the token>
-```
+If, for any reason, you need to store session cookies under a different domain, set config field 
+`SESSION_COOKIE_DOMAIN` in `config.py`. This value is used by Flask itself because Flask handles 
+the session data.
 
-Otherwise, the response is `401 Unauthorized` with the following JSON object paylaod:
+When authorizaion is REQUIED but missing from the request, the response is `401 Unauthorized` 
+with the following JSON object paylaod:
 
 ```json
 { "error": "Not logged in yet" }
@@ -48,15 +48,8 @@ Sign-in endpoint. Will redirects you to Microsoft's sign-in page.
 OAuth callback endpoint. You should not call this. 
 Microsoft, or Azure Active Directory to be more precise, will call this for you. 
 
-The response will look like 
-
-```json
-{
-  "token": "<jwt token>"
-}
-```
-
-Store the JWT token for later uses.
+The response is a `302 Found` to the frontend counterpart. The URL to that frontend is 
+configurable (see `config.py`).
 
 ## Available endpoints
 
@@ -73,8 +66,8 @@ Retrieves all known teams. The response is always `200 OK` with a JSON Array tha
 ```json
 [
   { "id": 0, "name": "Team A", "repo": "https://github.com/teaconmc/AreaControl" },
-  { "name": "Team B", "repo": "https://github.com/teaconmc/ChromeBall" },
-  { "name": "Team C", "repo": "https://github.com/teaconmc/SlideShow" },
+  { "id": 1, "name": "Team B", "repo": "https://github.com/teaconmc/ChromeBall" },
+  { "id": 2, "name": "Team C", "repo": "https://github.com/teaconmc/SlideShow" },
 ]
 ```
 
@@ -288,7 +281,7 @@ Otherwise, it will return `400 Bad Request` with a JSON object that looks like
 
 Requires authorization.
 
-Update information for the team with the specified name.
+Update information for the team with the specified id.
 
 Payload is `multipart/form-data`. Note that there is session-based CSRF protection, so the
 POST request MUST include session data.
