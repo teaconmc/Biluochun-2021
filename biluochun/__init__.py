@@ -1,13 +1,21 @@
 # -*- coding: utf-8 -*-
 
+'''
+Biluochun is the self-help admission system used by TeaCon to assist management.
+'''
+
+from flask import Flask
+from flask_cors import CORS
+
 from .authz import init_authz
 from .dashboard import init_dashboard
 from .model import init_db
 from .team import init_team_api
-from flask import Flask
-from flask_cors import CORS
 
 def create_app():
+    '''
+    Entry point to initialize the Flask application.
+    '''
     app = Flask(__name__)
     app.config.from_envvar('BILUOCHUN_CONFIG_PATH')
     # Wrapped with CORS

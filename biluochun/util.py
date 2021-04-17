@@ -19,3 +19,6 @@ def team_summary(team, detailed = False):
     if detailed:
         info['desc'] = team.description
     return info
+
+def user_summary(user):
+    return { 'id': user.id, 'name': user.name }

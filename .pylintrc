@@ -1,0 +1,10 @@
+# Apparently Flask-SQLAlchemy leverages __getattr__ to implement
+# dynamic attributes at runtime which cannot be statically analysied.
+# Similar things happen on Flask-WTF.
+# We have to tell pylint to ignore them.
+# See: https://www.lesinskis.com/pylint-false-positives.html
+
+[TYPECHECK]
+ignored-modules=flask_sqlalchemy
+
+generated-members=db.session.add|db.session.commit|db.session.merge|db.session.query|db.session.flush|db.Column|db.ForeignKey|db.Integer|db.LargeBinary|db.UnicodeText|db.String|db.relationship|form.error

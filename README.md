@@ -72,7 +72,7 @@ Retrieves all known teams. The response is always `200 OK` with a JSON Array tha
 
 ```json
 [
-  { "name": "Team A", "repo": "https://github.com/teaconmc/AreaControl" },
+  { "id": 0, "name": "Team A", "repo": "https://github.com/teaconmc/AreaControl" },
   { "name": "Team B", "repo": "https://github.com/teaconmc/ChromeBall" },
   { "name": "Team C", "repo": "https://github.com/teaconmc/SlideShow" },
 ]
@@ -80,9 +80,9 @@ Retrieves all known teams. The response is always `200 OK` with a JSON Array tha
 
 Array can be empty if no teams are known to te system (oof).
 
-### `GET /api/team/<team_name>`
+### `GET /api/team/<team_id>`
 
-Retrieves information about a particular team. If the request team exists, the response will 
+Retrieves information about a particular team. If the requested team exists, the response will 
 be `200 OK` with a JSON Object that looks like
 
 ```json
@@ -101,7 +101,44 @@ Otherwise, it will return `404 Not Found` with
 }
 ```
 
-### `GET /api/team/<team_name>/avatar`
+### `GET /api/team/<team_id>/members`
+
+Retrieves list of member users of the specified team. If the requested team exists, the response will 
+be `200 OK` with a JSON Array that looks like
+
+```json
+[
+  { "id": 0, "name": "TeaCon Participtant A" },
+]
+```
+
+Array may be empty if no one is in the requested team (oof). 
+
+If the requested team does not exist, it will return `404 Not Found` with
+
+```json
+{
+  "error": "No such team"
+}
+```
+
+### `POST /api/team/<team_id>/members`
+
+Requires authorization.
+
+Update the members of the requested team, so that the member list provided in the request body is merged 
+into the current member list of the requested team.
+
+Payload MUST be `multipart/form-data` with one or more `user` fields, each field has the id of the 
+corresponding user.
+
+### `PATCH /api/team/<team_id>/members`
+
+Requires authorization.
+
+Synonym of `POST /api/team/<team_id>/members`.
+
+### `GET /api/team/<team_id>/avatar`
 
 Retrieve avatar (aka profile picture) of a specific team.
 
@@ -117,20 +154,23 @@ If the team has set an avatar, this endpoint will give you `200 OK`, and MIME ty
 response is `image/png`.
 Otherwise, a `204 No Content` will be returned.
 
-### `GET /api/team/<team_name>/icon`
+### `GET /api/team/<team_id>/icon`
 
-Synonym of `GET /team/<team_name>/avatar`.
+Synonym of `GET /team/<team_id>/avatar`.
 
-### `GET /api/team/<team_name>/profile_pic`
+### `GET /api/team/<team_id>/profile_pic`
 
-Synonym of `GET /team/<team_name>/avatar`.
+Synonym of `GET /team/<team_id>/avatar`.
 
 ### `GET /api/profile/`
+
+Requires authorization.
 
 "Homepage"-ish endpoint, will give you this JSON that describes the currently logged-in user:
 
 ```json
 {
+  "id": 1,
   "name": "TeaCon Participtant A",
   "team": {
     "name": "Awesome Team 1",
@@ -144,6 +184,8 @@ If the current user does not belong to a team, `team` field will be `null`.
 
 ### `GET /api/profile/avatar/`
 
+Requires authorization.
+
 Retrieve current user's avatar (aka profile picture). 
 
 If the user has set an avatar, this endpoint will give you `200 OK`, and MIME type for the 
@@ -152,9 +194,13 @@ Otherwise, a `204 No Content` will be returned.
 
 ### `GET /api/profile/profile_pic`
 
+Requires authorization.
+
 Synonym of `GET /dashboard/avatar`.
 
 ### `POST /api/profile/avatar/`
+
+Requires authorization.
 
 Update current user's avatar (Aka profile picture).
 
@@ -177,9 +223,13 @@ Otherwise, it will return `400 Bad Request` with a JSON object that looks like
 
 ### `POST /api/profile/profile_pic`
 
+Requires authorization.
+
 Synonym of `POST /dashboard/avatar`.
 
 ### `POST /api/profile/`
+
+Requires authorization.
 
 Update user's information for currently logged-in user. 
 
@@ -207,8 +257,22 @@ Note that `details` may be JSON String or JSON Object.
 
 ### `POST /api/team/`
 
+Requires authorization.
+
 Creates a new team. The currently logged-in user MUST NOT belong to any other team. 
-This endpoint does not need any payload.
+Payload of this endpoint is OPTIONAL. If payload present, it MUST be `multipart/form-data`, 
+and one or more of the following fields MAY be presentt in the payload:
+
+  - `name`: the display name of the team, type `text`.  
+    If not specified, default to `{user.name}'s team`.
+  - `mod_name`: the display name of the mod created by this team, type `text`.  
+    If not specified, default to `{user.name}'s mod`.
+  - `description`: short (or long) descriptions for the team, type `text`.  
+    If not specified, default to empty.  
+    Note for frontend dev: you might want a `<textarea>` for this one.
+  - `repo`: the URL of the team's git repository, type `text`, will be checked against 
+    a URL validator.  
+    If not specified, default to empty.  
 
 Upon a successful `POST` request, this endpoint will return `200 OK` with empty json object `{}`. 
 Otherwise, it will return `400 Bad Request` with a JSON object that looks like
@@ -219,7 +283,9 @@ Otherwise, it will return `400 Bad Request` with a JSON object that looks like
 }
 ```
 
-### `POST /api/team/<team_name>`
+### `POST /api/team/<team_id>`
+
+Requires authorization.
 
 Update information for the team with the specified name.
 
@@ -229,7 +295,6 @@ The following fields are available:
 
   - `name`: the display name of the team, type `text`.
   - `mod_name`: the display name of the mod created by this team, type `text`.
-  - `profile_pic`: the avatar (aka profile picture) of the team, type `file`.
   - `description`: short (or long) descriptions for the team, type `text`. 
     Note for frontend dev: you might want a `<textarea>` for this one.
   - `repo`: the URL of the team's git repository, type `text`, will be checked against 
@@ -249,6 +314,10 @@ Otherwise, it will return `400 Bad Request` with a JSON object that looks like
 
 Note that `details` may be JSON String or JSON Object.
 
-REQUIRES a logged-in user; otherwise `401 Unauthorized` will be returned.
+### `POST /api/team/<team_id>/avatar`
 
+Requires authorization.
 
+Update the avatar of the requested team.
+
+This endpoint is handled in the same fashion as of `POST /api/profile/avatar/`.

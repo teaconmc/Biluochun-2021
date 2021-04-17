@@ -1,27 +1,44 @@
-from .form import Avatar, TeamInfo, UserInfo
-from .model import OAuth, Team, User, db
-from .util import cleanse_profile_pic, find_team_by_invite, team_summary
-from flask import Blueprint, Response, request, redirect, send_file, url_for
-from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
-from flask_login import current_user, login_required, logout_user
+'''
+Defines /api/profie endpoints series.
+'''
+
 from io import BytesIO
 
+from flask import Blueprint, Response, request, send_file
+from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
+from flask_login import current_user, login_required, logout_user
+
+from .form import Avatar, UserInfo
+from .model import OAuth, db
+from .util import cleanse_profile_pic, team_summary
+
 def init_dashboard(app):
+    '''
+    Initialize the app with /api/profie endpoints series.
+    '''
     bp = Blueprint('dashboard', __name__, url_prefix = '/api/profile')
 
     @bp.route('/logout', methods = [ 'POST' ])
     @login_required
-    def logout(): # TODO Do we still need this?
-        # Log out local account
-        # logout_user()
-        # Log out from the Microsoft Identity platform
-        # See: https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-protocols-oidc#send-a-sign-out-request
-        return redirect("https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=" + url_for("index", _external=True))
+    def logout():
+        '''
+        Log out the current user from our system.
+        This does not sign out the user from Microsoft's SSO system, unless the 
+        request is initiated from Microsoft SSO.
+        '''
+        logout_user()
+        return {}
 
     @bp.route('/', methods = [ 'GET' ])
     @login_required
     def main_page():
-        return { 'name': current_user.name, 'team': None if current_user.team == None else team_summary(current_user.team) }   
+        '''
+        Display a short summary of currently logged-in user in JSON format.
+        '''
+        return { 
+            'name': current_user.name, 
+            'team': None if current_user.team is None else team_summary(current_user.team) 
+        }
 
     @bp.route('/', methods = [ 'POST' ])
     @login_required
@@ -36,14 +53,17 @@ def init_dashboard(app):
             except Exception as e:
                 return { 'error': 'Error occured while updating info.', 'details': str(e) }, 500
         else:
-            return { 'error': 'Form contains error. Check "details" field for more information.', 'details': form.errors }, 400
+            return { 
+                'error': 'Form contains error. Check "details" field for more information.', 
+                'details': form.errors
+            }, 400
 
     @bp.route('/avatar', methods = [ 'GET' ])
     @bp.route('/profile_pic', methods = [ 'GET' ])
     @login_required
     def get_avatar():
         img = current_user.profile_pic
-        if img == None or len(img) == 0:
+        if img is None or len(img) == 0:
             return Response(None, 204)
         else:
             return send_file(BytesIO(img), mimetype = 'image/png')
@@ -64,7 +84,9 @@ def init_dashboard(app):
             db.session.commit()
             return {}
         else:
-            return { 'error': 'No valid image file found. Check if you forget to put an image file in request body?' }, 400
+            return {
+                'error': 'No valid image file found. Check if you forget to put an image file in request body?'
+            }, 400
 
     bp.storage = SQLAlchemyStorage(OAuth, db.session, user = current_user)
     app.register_blueprint(bp)
