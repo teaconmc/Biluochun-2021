@@ -11,6 +11,7 @@ from .authz import init_authz
 from .dashboard import init_dashboard
 from .model import init_db
 from .team import init_team_api
+from .user import init_users_api
 
 def create_app():
     '''
@@ -25,6 +26,7 @@ def create_app():
     init_authz(app)
     init_dashboard(app)
     init_team_api(app)
+    init_users_api(app)
 
     @app.route('/')
     def index():

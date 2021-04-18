@@ -59,6 +59,56 @@ Any endpoints that require authorization will be noted with "Requires authorizat
 
 Always gives you `200 OK` with empty JSON Object `{}`. Serves as a simple, crude health check.
 
+### `GET /api/users`
+
+Retrieves all known participtants. The response is always `200 OK` with a JSON Array that looks like
+
+```json
+[
+  { "id": 0, "name": "TeaCon Participtant A"  },
+  { "id": 1, "name": "TeaCon Participtant B" },
+  { "id": 2, "name": "TeaCon Participtant C" },
+]
+```
+
+Array can be empty if no participtants are known to te system (oof).
+
+### `GET /api/users/<user_id>`
+
+Retrieves information about a particular participtant. If the requested participtant exists, 
+the response will be `200 OK` with a JSON Object that looks like
+
+```json
+{
+  "id": 1,
+  "name": "TeaCon Participtant B",
+}
+```
+
+Otherwise, it will return `404 Not Found` with
+
+```json
+{
+  "error": "No such team"
+}
+```
+
+### `GET /api/users/<user_id>/avatar`
+
+Retrieve avatar (aka profile picture) of a specific participtant.
+
+If the participtant does not exist, it will return `404 Not Found` with
+
+```json
+{
+  "error": "No such team"
+}
+```
+
+If the participtant has set an avatar, this endpoint will give you `200 OK`, and MIME type for the
+response is `image/png`.
+Otherwise, a `204 No Content` will be returned.
+
 ### `GET /api/team`
 
 Retrieves all known teams. The response is always `200 OK` with a JSON Array that looks like
