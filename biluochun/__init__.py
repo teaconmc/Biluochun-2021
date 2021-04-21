@@ -13,9 +13,11 @@ from .model import init_db
 from .team import init_team_api
 from .user import init_users_api
 
-# Enforce HTTPS
-# https://stackoverflow.com/a/37842465
 class ReverseProxied(object):
+    '''
+    Wrapper class to enforce HTTPS.
+    Adapted from https://stackoverflow.com/a/37842465
+    '''
     def __init__(self, app):
         self.app = app
 
