@@ -75,7 +75,10 @@ def init_team_api(app):
             except Exception as e:
                 return { 'error': 'Error occured while updating info.', 'details': str(e) }, 500
         else:
-            return { 'error': 'Form contains error. Check "details" field for more information.', 'details': form.errors }, 400
+            return {
+                'error': 'Form contains error. Check "details" field for more information.',
+                'details': form.errors
+            }, 400
 
     @bp.route('/<team_id>/members', methods = [ 'GET' ])
     def get_team_members(team_id):
@@ -86,6 +89,7 @@ def init_team_api(app):
             return { 'members': [ user_summary(member) for member in team.members ] }
     
     @bp.route('/<team_id>/members', methods = [ 'POST', 'PATCH' ])
+    @login_required
     def add_team_members(team_id):
         team = Team.query.get(team_id)
         if team is None:
@@ -133,6 +137,8 @@ def init_team_api(app):
             db.session.commit()
             return {}
         else:
-            return { 'error': 'No valid image file found. Check if you forget to put an image file in request body?' }, 400
+            return {
+                'error': 'No valid image file found. Check if you forget to put an image file in request body?'
+            }, 400
 
     app.register_blueprint(bp)

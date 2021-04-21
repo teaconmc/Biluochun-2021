@@ -35,8 +35,8 @@ def init_dashboard(app):
         '''
         Display a short summary of currently logged-in user in JSON format.
         '''
-        return { 
-            'name': current_user.name, 
+        return {
+            'name': current_user.name,
             'team': None if current_user.team is None else team_summary(current_user.team) 
         }
 
