@@ -13,11 +13,22 @@ from .model import init_db
 from .team import init_team_api
 from .user import init_users_api
 
+# Enforce HTTPS
+# https://stackoverflow.com/a/37842465
+class ReverseProxied(object):
+    def __init__(self, app):
+        self.app = app
+
+    def __call__(self, environ, start_response):
+        environ['wsgi.url_scheme'] = 'https'
+        return self.app(environ, start_response)
+
 def create_app():
     '''
     Entry point to initialize the Flask application.
     '''
     app = Flask(__name__)
+    app.wsgi_app = ReverseProxied(app.wsgi_app)
     app.config.from_envvar('BILUOCHUN_CONFIG_PATH')
     # Wrapped with CORS
     CORS(app, supports_credentials = True)
