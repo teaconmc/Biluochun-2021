@@ -21,7 +21,7 @@ def init_team_api(app):
     @login_required
     def create_team():
         if current_user.team_id is None or current_user.team_id <= 0:
-            next_id = db.session.query(func.max(Team.id)).first() + 1
+            next_id = db.session.query(func.max(Team.id)).first()[0] + 1
             team_name = f"{current_user.name}'s team"
             mod_name = f"{current_user.name}'s mod"
             team_desc = ""

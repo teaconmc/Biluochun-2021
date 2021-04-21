@@ -38,7 +38,7 @@ def init_authz(app):
             uid = ms_profile['id'].lower()
             user = User.query.filter_by(ms_id = uid).first()
             if user is None:
-                next_id = db.session.query(func.max(User.id)).first() + 1
+                next_id = db.session.query(func.max(User.id)).first()[0] + 1
                 user = User(id = next_id, ms_id = uid, name = ms_profile['displayName'])
                 db.session.add(user)
                 db.session.commit()
