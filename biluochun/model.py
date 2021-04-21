@@ -24,6 +24,7 @@ class Team(db.Model):
 
 class User(db.Model, flask_login.UserMixin):
     id = db.Column(db.Integer, primary_key = True)
+    ms_id = db.Column(db.String(16), nullable = False, unique = True)
     name = db.Column(db.UnicodeText, nullable = False, unique = True)
     profile_pic = db.Column(db.LargeBinary)
     team_id = db.Column(db.Integer, db.ForeignKey("team.id"))
