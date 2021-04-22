@@ -1,4 +1,4 @@
-from flask import redirect
+from flask import redirect, Response
 from flask_dance.contrib.azure import azure, make_azure_blueprint
 from flask_login import LoginManager, login_user
 from sqlalchemy import func
@@ -43,7 +43,7 @@ def init_authz(app):
                 db.session.add(user)
                 db.session.commit()
             login_user(user)
-            return redirect(app.config['FRONTEND_URL'])
+            return '', 204
         else:
             return { 'error': 'Not logged in yet' }, 401
 
