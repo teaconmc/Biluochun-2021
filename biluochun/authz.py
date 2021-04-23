@@ -1,9 +1,10 @@
-from flask import redirect, Response
+from flask import render_template
 from flask_dance.contrib.azure import azure, make_azure_blueprint
 from flask_login import LoginManager, login_user
 from sqlalchemy import func
 
 from .model import User, db
+from .util import team_summary
 
 def init_authz(app):
     bp = make_azure_blueprint(
@@ -38,12 +39,16 @@ def init_authz(app):
             uid = ms_profile['id'].lower()
             user = User.query.filter_by(ms_id = uid).first()
             if user is None:
-                next_id = db.session.query(func.max(User.id)).first()[0] + 1
+                next_id = db.session.query(func.max(User.id)).first()[0]
+                if next_id:
+                    next_id += 1
+                else:
+                    next_id = 1
                 user = User(id = next_id, ms_id = uid, name = ms_profile['displayName'])
                 db.session.add(user)
                 db.session.commit()
             login_user(user)
-            return '', 204
+            return render_template('complete.html')
         else:
             return { 'error': 'Not logged in yet' }, 401
 

@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<script>
+    if (window.opener) {
+        fetch('/api/profile/', { "credentials": "include" }).then(r => r.json()).then(payload => {
+            window.postMessage(profile, window.opener)
+            window.close()
+        })
+    }
+</script>
+</body>
+</html>

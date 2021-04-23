@@ -48,10 +48,7 @@ def init_team_api(app):
     @bp.route('/<team_id>', methods = [ 'GET' ])
     def show_team(team_id):
         team = Team.query.get(team_id)
-        if team is None:
-            return { 'error': 'No such team' }, 404
-        else:
-            return team_summary(team, detailed = True)
+        return { 'error': 'No such team' }, 404 if team is None else team_summary(team, detailed = True)
 
     @bp.route('/<team_id>', methods = [ 'POST' ])
     @login_required
