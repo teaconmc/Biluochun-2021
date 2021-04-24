@@ -1,13 +1,13 @@
 <!doctype html>
 <html>
 <head>
-    <title></title>
+    <title>Login completed</title>
 </head>
 <body>
 <script>
     if (window.opener) {
         fetch('/api/profile/', { "credentials": "include" }).then(r => r.json()).then(payload => {
-            window.postMessage(payload, window.opener)
+            window.opener.postMessage(payload, "https://www.teacon.org")
             window.close()
         })
     }
