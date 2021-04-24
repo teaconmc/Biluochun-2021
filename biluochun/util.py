@@ -1,6 +1,12 @@
-from .model import Team
+'''
+Utility methods used by Biluochun.
+'''
+
 from io import BytesIO
+
 from PIL import Image
+
+from .model import Team
 
 def cleanse_profile_pic(raw):
     '''
@@ -18,6 +24,7 @@ def team_summary(team, detailed = False):
     info = { 'id': team.id, 'name': team.name, 'mod_name': team.mod_name, 'repo': team.repo }
     if detailed:
         info['desc'] = team.description
+        info['invite'] = team.invite
     return info
 
 def user_summary(user):

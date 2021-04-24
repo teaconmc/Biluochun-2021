@@ -130,10 +130,12 @@ be `200 OK` with a JSON Object that looks like
 
 ```json
 {
+  "id": 0,
   "name": "Team B",
   "mod_name": "TeamBCraft",
   "repo": "https://github.com/teaconmc/ChromeBall",
-  "desc": "Lorem ipsum"
+  "desc": "Lorem ipsum",
+  "invite": "0123456789abcedf"
 }
 ```
 
@@ -282,8 +284,6 @@ POST request MUST include session data.
 The following fields are available:
 
   - `name`: the display name of the currently logged-in user, type `text`.
-  - `team_id`: the numeric id of the team that this user belongs to, type `text`, must be 
-    parseable as a non-negative integer.
 
 All fields can be left empty to indicate "no change".
 
@@ -299,13 +299,70 @@ Otherwise, it will return `400 Bad Request` with a JSON object that looks like
 
 Note that `details` may be JSON String or JSON Object. 
 
+### `GET /api/profile/team`
+
+Requires authorization.
+
+Get the information of the team that currently logged-in user belongs to.
+
+Return value is similar to that of `GET /api/team/<team_id>`, except when the user does not 
+belong to any team, the result is `404 Not Found` with:
+
+```json
+{ 
+  "error": "You have not joined a team yet!"
+}
+```
+
+### `POST /api/profile/team`
+
+Requires authorization.
+
+Accept an invitation and thus join a team. The request payload MUST be `multipart/form-data` with 
+the following field(s) present:
+
+  - `invite_code`: The invitation code of a team. `GET /api/team/<team_id>` contains it.
+
+Upon success, an empty JSON Object `{}` is returned.
+
+If the currently logged-in user has joined a team, the result is `409 Conflict` with:
+
+```json
+{
+  "error": "You have joined a team!"
+}
+```
+
+### `PUT /api/profile/team`
+
+Requires authorization.
+
+Synonym of `POST /api/profile/team`.
+
+### `DELETE /api/profile/team`
+
+Requires authorization.
+
+Quit the current team for the currently logged-in user. This effectively set the team to `null` for 
+the currently logged-in user.
+
+Upon success, an empty JSON Object `{}` is returned.
+
+If the currently logged-in user does not belong to any team, the result is `404 Not Found` with:
+
+```json
+{ 
+  "error": "You have not joined a team yet!"
+}
+```
+
 ### `POST /api/team/`
 
 Requires authorization.
 
 Creates a new team. The currently logged-in user MUST NOT belong to any other team. 
 Payload of this endpoint is OPTIONAL. If payload present, it MUST be `multipart/form-data`, 
-and one or more of the following fields MAY be presentt in the payload:
+and one or more of the following fields MAY be present in the payload:
 
   - `name`: the display name of the team, type `text`.  
     If not specified, default to `{user.name}'s team`.

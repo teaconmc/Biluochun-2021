@@ -8,9 +8,9 @@ from flask import Blueprint, Response, request, send_file
 from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
 from flask_login import current_user, login_required, logout_user
 
-from .form import Avatar, UserInfo
-from .model import OAuth, db
-from .util import cleanse_profile_pic, team_summary
+from .form import Avatar, TeamInvite, UserInfo
+from .model import OAuth, Team, db
+from .util import cleanse_profile_pic, find_team_by_invite, team_summary
 
 def init_dashboard(app):
     '''
@@ -45,18 +45,44 @@ def init_dashboard(app):
     def update_personal_info():
         form = UserInfo()
         if form.validate_on_submit():
-            try:
-                current_user.name = form.name.data
-                current_user.team_id = form.team.data
-                db.session.commit()
-                return {}
-            except Exception as e:
-                return { 'error': 'Error occured while updating info.', 'details': str(e) }, 500
+            current_user.name = form.name.data
+            db.session.commit()
+            return {}
         else:
-            return { 
-                'error': 'Form contains error. Check "details" field for more information.', 
+            return {
+                'error': 'Form contains error. Check "details" field for more information.',
                 'details': form.errors
             }, 400
+    
+    @bp.route('/team', methods = [ 'GET' ])
+    def get_team_info():
+        if current_user.team_id is not None:
+            return team_summary(Team.query.get(current_user.team_id))
+        return { 'error': 'You have not joined a team yet!' }, 404
+
+    @bp.route('/team', methods = [ 'POST', 'PUT' ])
+    @login_required
+    def join_team():
+        if current_user.team_id is not None:
+            form = TeamInvite()
+            if form.validate_on_submit():
+                team = find_team_by_invite(form.invite_code.data)
+                current_user.team_id = team.id
+                db.session.commit()
+                return {}
+        return {
+            'error': 'You have joined a team!'
+        }, 409
+    
+    @bp.route('/team', methods = [ 'DELETE' ])
+    def leave_team():
+        if current_user.team_id is not None:
+            current_user.team_id = None
+            db.session.commit()
+            return {}
+        return {
+            'error': 'You have not joined a team yet!'
+        }, 404
 
     @bp.route('/avatar', methods = [ 'GET' ])
     @bp.route('/profile_pic', methods = [ 'GET' ])
