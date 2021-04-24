@@ -21,7 +21,11 @@ def init_team_api(app):
     @login_required
     def create_team():
         if current_user.team_id is None or current_user.team_id <= 0:
-            #next_id = db.session.query(func.max(Team.id)).first()[0] + 1
+            next_id = db.session.query(func.max(Team.id)).first()[0]
+            if next_id:
+                next_id += 1
+            else:
+                next_id = 1
             team_name = f"{current_user.name}'s team"
             mod_name = f"{current_user.name}'s mod"
             team_desc = ""
@@ -36,8 +40,8 @@ def init_team_api(app):
                     team_desc = form.desc
                 if form.repo is not None:
                     repo_url = form.repo
-            new_team = Team(name = team_name, invite = secrets.token_hex(8), mod_name = mod_name, \
-                description = team_desc, repo = repo_url)
+            new_team = Team(id = next_id, name = team_name, invite = secrets.token_hex(8), \
+                mod_name = mod_name, description = team_desc, repo = repo_url)
             db.session.add(new_team)
             current_user.team_id = new_team.id
             db.session.commit()

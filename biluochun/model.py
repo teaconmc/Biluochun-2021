@@ -16,7 +16,7 @@ class Team(db.Model):
     invite = db.Column(db.String(16), nullable = False, unique = True)
     profile_pic = db.Column(db.LargeBinary)
     description = db.Column(db.UnicodeText)
-    repo = db.Column(db.Text, unique = True)
+    repo = db.Column(db.Text)
     members = db.relationship('User', backref = 'user', lazy = True)
 
     def __repr__(self):
