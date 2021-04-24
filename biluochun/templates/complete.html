@@ -7,7 +7,7 @@
 <script>
     if (window.opener) {
         fetch('/api/profile/', { "credentials": "include" }).then(r => r.json()).then(payload => {
-            window.postMessage(profile, window.opener)
+            window.postMessage(payload, window.opener)
             window.close()
         })
     }
