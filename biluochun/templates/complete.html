@@ -7,7 +7,7 @@
 <script>
     if (window.opener) {
         fetch('/api/profile/', { "credentials": "include" }).then(r => r.json()).then(payload => {
-            window.opener.postMessage(payload, "https://www.teacon.org")
+            window.opener.postMessage(payload)
             window.close()
         })
     }
