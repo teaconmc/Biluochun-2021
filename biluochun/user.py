@@ -20,7 +20,7 @@ def init_users_api(app):
     @bp.route('/<user_id>')
     def show_user(user_id):
         user = User.query.get(user_id)
-        return { 'error': 'No such user' } if user is None else user_summary(user)
+        return ({ 'error': 'No such user' }, 404) if user is None else user_summary(user)
     
     @bp.route('/<user_id>/avatar')
     @bp.route('/<user_id>/profile_pic')

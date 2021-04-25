@@ -55,7 +55,7 @@ def init_team_api(app):
     @bp.route('/<int:team_id>', methods = [ 'GET' ])
     def show_team(team_id):
         team = Team.query.get(team_id)
-        return { 'error': 'No such team' }, 404 if team is None else team_summary(team, detailed = True)
+        return ({ 'error': 'No such team' }, 404) if team is None else team_summary(team, detailed = True)
 
     @bp.route('/<int:team_id>', methods = [ 'POST' ])
     @login_required
@@ -86,7 +86,7 @@ def init_team_api(app):
     @bp.route('/<int:team_id>/members', methods = [ 'GET' ])
     def get_team_members(team_id):
         team = Team.query.get(team_id)
-        return { 'error': 'No such team' }, 404 if team is None \
+        return ({ 'error': 'No such team' }, 404) if team is None \
             else jsonify([ user_summary(member) for member in team.members ])
     
     @bp.route('/<int:team_id>/members', methods = [ 'POST', 'PATCH' ])
@@ -109,7 +109,7 @@ def init_team_api(app):
     @bp.route('/<int:team_id>/profile_pic', methods = [ 'GET' ])
     def get_team_icon(team_id):
         team = Team.query.get(team_id)
-        return { 'error': 'No such team' }, 404 if team is None \
+        return ({ 'error': 'No such team' }, 404) if team is None \
             else send_file(BytesIO(team.profile_pic), mimetype = 'image/png')
     
     @bp.route('/<int:team_id>/avatar', methods = [ 'POST' ])
