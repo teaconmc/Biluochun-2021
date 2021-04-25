@@ -6,7 +6,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField, FileRequired
 from wtforms import IntegerField, StringField
 from wtforms.fields import FieldList
-from wtforms.validators import InputRequired, Optional, URL, ValidationError
+from wtforms.validators import InputRequired, Length, Optional, URL, ValidationError
 
 from .model import User
 from .util import find_team_by_invite
@@ -30,14 +30,14 @@ class Avatar(FlaskForm):
     ])
 
 class UserInfo(FlaskForm):
-    name = StringField('name')
+    name = StringField('name', validators = [ Length(128), Optional() ])
 
 class UserList(FlaskForm):
     users = FieldList(IntegerField('user', validators = [ InputRequired(), validate_user ]))
 
 class TeamInfo(FlaskForm):
-    name = StringField('name', validators = [ Optional() ])
-    mod_name = StringField('mod_name', validators = [ Optional() ])
+    name = StringField('name', validators = [ Length(128), Optional() ])
+    mod_name = StringField('mod_name', validators = [ Length(128), Optional() ])
     desc = StringField('desc', validators = [ Optional() ])
     repo = StringField('repo', validators = [ URL(), Optional() ])
 
