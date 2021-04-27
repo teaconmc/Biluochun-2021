@@ -55,9 +55,11 @@ def init_dashboard(app):
             }, 400
     
     @bp.route('/team', methods = [ 'GET' ])
+    @login_required
     def get_team_info():
         if current_user.team_id is not None:
-            return team_summary(Team.query.get(current_user.team_id))
+            return team_summary(Team.query.get(current_user.team_id), \
+                detailed = True, invitation = True)
         return { 'error': 'You have not joined a team yet!' }, 404
 
     @bp.route('/team', methods = [ 'POST', 'PUT' ])
@@ -75,6 +77,7 @@ def init_dashboard(app):
         }, 409
     
     @bp.route('/team', methods = [ 'DELETE' ])
+    @login_required
     def leave_team():
         if current_user.team_id is not None:
             current_user.team_id = None

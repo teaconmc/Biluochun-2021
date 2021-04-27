@@ -168,22 +168,6 @@ If the requested team does not exist, it will return `404 Not Found` with
 }
 ```
 
-### `POST /api/team/<team_id>/members`
-
-Requires authorization.
-
-Update the members of the requested team, so that the member list provided in the request body is merged 
-into the current member list of the requested team.
-
-Payload MUST be `multipart/form-data` with one or more `user` fields, each field has the id of the 
-corresponding user.
-
-### `PATCH /api/team/<team_id>/members`
-
-Requires authorization.
-
-Synonym of `POST /api/team/<team_id>/members`.
-
 ### `GET /api/team/<team_id>/avatar`
 
 Retrieve avatar (aka profile picture) of a specific team.

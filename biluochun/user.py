@@ -17,13 +17,13 @@ def init_users_api(app):
     def list_users():
         return jsonify([user_summary(user) for user in User.query.all()])
 
-    @bp.route('/<user_id>')
+    @bp.route('/<int:user_id>')
     def show_user(user_id):
         user = User.query.get(user_id)
         return ({ 'error': 'No such user' }, 404) if user is None else user_summary(user)
     
-    @bp.route('/<user_id>/avatar')
-    @bp.route('/<user_id>/profile_pic')
+    @bp.route('/<int:user_id>/avatar')
+    @bp.route('/<int:user_id>/profile_pic')
     def show_user_avatar(user_id):
         user = User.query.get(user_id)
         if user is None:

@@ -10,8 +10,8 @@ from flask.json import jsonify
 from flask_login import current_user, login_required
 from sqlalchemy import func
 
-from .form import Avatar, TeamInfo, UserList
-from .model import Team, User, db
+from .form import Avatar, TeamInfo
+from .model import Team, db
 from .util import cleanse_profile_pic, team_summary, user_summary
 
 def init_team_api(app):
@@ -88,21 +88,6 @@ def init_team_api(app):
         team = Team.query.get(team_id)
         return ({ 'error': 'No such team' }, 404) if team is None \
             else jsonify([ user_summary(member) for member in team.members ])
-    
-    @bp.route('/<int:team_id>/members', methods = [ 'POST', 'PATCH' ])
-    @login_required
-    def add_team_members(team_id):
-        team = Team.query.get(team_id)
-        if team is None:
-            return { 'error': 'No such team' }, 404
-        else:
-            form = UserList()
-            if form.validate_on_submit():
-                for f in form.users:
-                    user = User.query.get(f.data)
-                    user.team_id = team_id
-                db.session.commit()
-            return { 'info': 'Not Yet Implemented' } 
 
     @bp.route('/<int:team_id>/avatar', methods = [ 'GET' ])
     @bp.route('/<int:team_id>/icon', methods = [ 'GET' ])

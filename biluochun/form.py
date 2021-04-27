@@ -4,9 +4,8 @@ Defines web form structures used by Biluochun.
 
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField, FileRequired
-from wtforms import IntegerField, StringField
-from wtforms.fields import FieldList
-from wtforms.validators import InputRequired, Length, Optional, URL, ValidationError
+from wtforms import StringField
+from wtforms.validators import Length, Optional, URL, ValidationError
 
 from .model import User
 from .util import find_team_by_invite
@@ -31,9 +30,6 @@ class Avatar(FlaskForm):
 
 class UserInfo(FlaskForm):
     name = StringField('name', validators = [ Length(128), Optional() ])
-
-class UserList(FlaskForm):
-    users = FieldList(IntegerField('user', validators = [ InputRequired(), validate_user ]))
 
 class TeamInfo(FlaskForm):
     name = StringField('name', validators = [ Length(128), Optional() ])
