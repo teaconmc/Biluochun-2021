@@ -234,12 +234,9 @@ Requires authorization.
 
 Update current user's avatar (Aka profile picture).
 
-Payload may be `multipart/form-data` with the following REQUIRED field present:
+Payload MUST `multipart/form-data` with the following REQUIRED field present:
 
   - `avatar`: the avatar (aka profile picture) of the currently logged-in user, type `file`.
-
-Payload may also be the image binary. Please indicate the `content-type` in your request 
-header fields.
 
 Upon a successful `POST` request, this endpoint will return `200 OK` with empty json object `{}`.
 Otherwise, it will return `400 Bad Request` with a JSON object that looks like

@@ -4,7 +4,7 @@ Defines /api/profie endpoints series.
 
 from io import BytesIO
 
-from flask import Blueprint, Response, request, send_file
+from flask import Blueprint, Response, send_file
 from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
 from flask_login import current_user, login_required, logout_user
 
@@ -79,7 +79,7 @@ def init_dashboard(app):
     @bp.route('/team', methods = [ 'DELETE' ])
     @login_required
     def leave_team():
-        if current_user.team_id is not None:
+        if current_user.team_id is None:
             current_user.team_id = None
             db.session.commit()
             return {}
@@ -101,20 +101,15 @@ def init_dashboard(app):
     @bp.route('/profile_pic', methods = [ 'POST' ])
     @login_required
     def update_avatar():
-        raw_img = None
-        if form:
-            form = Avatar()
-            raw_img = form.avatar.data
-        else:
-            raw_img = request.stream # TODO Validate it
-            
-        if raw_img:
-            current_user.profile_pic = cleanse_profile_pic(raw_img)
+        form = Avatar()
+        if form.validate_on_submit():
+            current_user.profile_pic = cleanse_profile_pic(form.avatar.data)
             db.session.commit()
             return {}
         else:
             return {
-                'error': 'No valid image file found. Check if you forget to put an image file in request body?'
+                'error': 'Form contains error. Check "details" field for more information.',
+                'details': form.errors
             }, 400
 
     bp.storage = SQLAlchemyStorage(OAuth, db.session, user = current_user)

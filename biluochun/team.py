@@ -12,7 +12,7 @@ from sqlalchemy import func
 
 from .form import Avatar, TeamInfo
 from .model import Team, db
-from .util import cleanse_profile_pic, team_summary, user_summary
+from .util import cleanse_profile_pic, find_team_by_name, team_summary, user_summary
 
 def init_team_api(app):
     '''
@@ -46,6 +46,11 @@ def init_team_api(app):
                     new_team.description = form.desc.data
                 if form.repo.data is not None:
                     new_team.repo = form.repo.data
+            # Suffix the team name in case of duplication
+            suffix = 1
+            while find_team_by_name(new_team.name) is not None:
+                new_team.name = new_team.name + str(suffix)
+            # Commit the changes
             db.session.add(new_team)
             db.session.commit()
             return {}
@@ -107,19 +112,15 @@ def init_team_api(app):
             return { 'error': 'No such team' }, 404
         if current_user.team_id != team.id:
             return { 'error': f"You are not in team '{team.name}'!" }, 400
-        raw_img = None
-        if form:
-            form = Avatar()
-            raw_img = form.avatar.data
-        else:
-            raw_img = request.stream # TODO Validate it
-        if raw_img:
-            team.profile_pic = cleanse_profile_pic(raw_img)
+        form = Avatar()
+        if form.validate_on_submit():
+            team.profile_pic = cleanse_profile_pic(form.avatar.data)
             db.session.commit()
             return {}
         else:
             return {
-                'error': 'No valid image file found. Check if you forget to put an image file in request body?'
+                'error': 'Form contains error. Check "details" field for more information.',
+                'details': form.errors
             }, 400
 
     app.register_blueprint(bp)

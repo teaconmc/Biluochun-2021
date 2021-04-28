@@ -10,7 +10,7 @@ from wtforms.validators import Length, Optional, URL, ValidationError
 from .model import User
 from .util import find_team_by_invite
 
-def validate_team(form, field):
+def validate_invite(form, field):
     if field.data is None:
         raise ValidationError("Team invite code is missing")
     if find_team_by_invite(field.data) is None:
@@ -29,13 +29,13 @@ class Avatar(FlaskForm):
     ])
 
 class UserInfo(FlaskForm):
-    name = StringField('name', validators = [ Length(128), Optional() ])
+    name = StringField('name', validators = [ Length(min = 1, max = 128), Optional() ])
 
 class TeamInfo(FlaskForm):
-    name = StringField('name', validators = [ Length(128), Optional() ])
-    mod_name = StringField('mod_name', validators = [ Length(128), Optional() ])
+    name = StringField('name', validators = [ Length(min = 1, max = 128), Optional() ])
+    mod_name = StringField('mod_name', validators = [ Length(min = 1, max = 128), Optional() ])
     desc = StringField('desc', validators = [ Optional() ])
     repo = StringField('repo', validators = [ URL(), Optional() ])
 
 class TeamInvite(FlaskForm):
-    invite_code = StringField('invite', validators = [ validate_team ])
+    invite_code = StringField('invite', validators = [ validate_invite ])
