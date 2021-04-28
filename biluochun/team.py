@@ -50,6 +50,7 @@ def init_team_api(app):
             suffix = 1
             while find_team_by_name(new_team.name) is not None:
                 new_team.name = new_team.name + str(suffix)
+                suffix += 1
             # Commit the changes
             db.session.add(new_team)
             db.session.commit()
@@ -80,6 +81,12 @@ def init_team_api(app):
                 team.description = form.desc.data
             if form.repo.data is not None:
                 team.repo = form.repo.data
+            # Suffix the team name in case of duplication
+            suffix = 1
+            while find_team_by_name(team.name) is not None:
+                team.name = team.name + str(suffix)
+                suffix += 1
+            # Commit the changes
             db.session.commit()
             return {}
         else:
