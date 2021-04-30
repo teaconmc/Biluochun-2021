@@ -68,6 +68,8 @@ def init_dashboard(app):
             form = TeamInvite()
             if form.validate_on_submit():
                 team = find_team_by_invite(form.invite_code.data)
+                if len(team.members) <= 0:
+                    return { 'error': 'Cannot join abandonded team' }, 403
                 current_user.team_id = team.id
                 db.session.commit()
                 return {}
