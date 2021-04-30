@@ -65,7 +65,7 @@ def init_dashboard(app):
     @bp.route('/team', methods = [ 'POST', 'PUT' ])
     @login_required
     def join_team():
-        if current_user.team_id is not None:
+        if current_user.team_id is None:
             form = TeamInvite()
             if form.validate_on_submit():
                 team = find_team_by_invite(form.invite_code.data)
