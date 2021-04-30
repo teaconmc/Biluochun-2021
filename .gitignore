@@ -15,3 +15,11 @@ build/
 
 # Useful for holding custom configuration
 private
+
+.cache
+.python_history
+.venv_bak
+.viminfo
+log
+*.db
+*.sh
