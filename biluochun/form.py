@@ -24,7 +24,7 @@ def validate_user(form, field):
 
 class Avatar(FlaskForm):
     class Meta:
-        csrf = True
+        csrf = False
     avatar = FileField('avatar', validators = [
         FileRequired(),
         FileAllowed([ 'jpg', 'jpe', 'jpeg', 'png', 'gif', 'svg', 'bmp', 'webp' ]) 
@@ -32,12 +32,12 @@ class Avatar(FlaskForm):
 
 class UserInfo(FlaskForm):
     class Meta:
-        csrf = True
+        csrf = False
     name = StringField('name', validators = [ Length(min = 1, max = 128), Optional() ])
 
 class TeamInfo(FlaskForm):
     class Meta:
-        csrf = True
+        csrf = False
     name = StringField('name', validators = [ Length(min = 1, max = 128), Optional() ])
     mod_name = StringField('mod_name', validators = [ Length(min = 1, max = 128), Optional() ])
     desc = StringField('desc', validators = [ Optional() ])
@@ -45,5 +45,5 @@ class TeamInfo(FlaskForm):
 
 class TeamInvite(FlaskForm):
     class Meta:
-        csrf = True
+        csrf = False
     invite_code = StringField('invite', validators = [ validate_invite ])
