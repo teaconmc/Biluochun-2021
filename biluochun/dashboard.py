@@ -103,7 +103,7 @@ def init_dashboard(app):
                 next_id += 1
             else:
                 next_id = 3
-            avatar = Image(next_id, data = cleanse_profile_pic(form.avatar.data))
+            avatar = Image(id = next_id, data = cleanse_profile_pic(form.avatar.data))
             db.session.add(avatar)
             current_user.profile_pic_id = next_id
             db.session.commit()

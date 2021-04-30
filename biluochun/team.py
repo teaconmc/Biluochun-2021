@@ -127,7 +127,7 @@ def init_team_api(app):
                 next_id += 1
             else:
                 next_id = 3
-            avatar = Image(next_id, data = cleanse_profile_pic(form.avatar.data))
+            avatar = Image(id = next_id, data = cleanse_profile_pic(form.avatar.data))
             db.session.add(avatar)
             team.profile_pic_id = avatar.id
             db.session.commit()
