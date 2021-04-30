@@ -17,7 +17,7 @@ def init_team_api(app):
     '''
     Initialize the app with /api/team endpoints series.
     '''
-    bp = Blueprint('api', __name__, url_prefix = '/api/team')
+    bp = Blueprint('team', __name__, url_prefix = '/api/team')
     
     @bp.route('/', methods = [ 'GET' ])
     def list_all_teams():
