@@ -23,19 +23,27 @@ def validate_user(form, field):
         raise ValidationError(f"User #{field.data} does not exist")
 
 class Avatar(FlaskForm):
+    class Meta:
+        csrf = True
     avatar = FileField('avatar', validators = [
         FileRequired(),
         FileAllowed([ 'jpg', 'jpe', 'jpeg', 'png', 'gif', 'svg', 'bmp', 'webp' ]) 
     ])
 
 class UserInfo(FlaskForm):
+    class Meta:
+        csrf = True
     name = StringField('name', validators = [ Length(min = 1, max = 128), Optional() ])
 
 class TeamInfo(FlaskForm):
+    class Meta:
+        csrf = True
     name = StringField('name', validators = [ Length(min = 1, max = 128), Optional() ])
     mod_name = StringField('mod_name', validators = [ Length(min = 1, max = 128), Optional() ])
     desc = StringField('desc', validators = [ Optional() ])
     repo = StringField('repo', validators = [ URL(), Optional() ])
 
 class TeamInvite(FlaskForm):
+    class Meta:
+        csrf = True
     invite_code = StringField('invite', validators = [ validate_invite ])
