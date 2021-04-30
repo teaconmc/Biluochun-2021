@@ -79,7 +79,7 @@ def init_dashboard(app):
     @bp.route('/team', methods = [ 'DELETE' ])
     @login_required
     def leave_team():
-        if current_user.team_id is None:
+        if current_user.team_id is not None:
             current_user.team_id = None
             db.session.commit()
             return {}
