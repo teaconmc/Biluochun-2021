@@ -20,5 +20,10 @@ def init_image(app):
         if img is None:
             return { "error": "Not found" }, 404
         return send_file(BytesIO(img.data), mimetype = 'image/png')
+    
+    @bp.after_request
+    def setup_cache_policy(r):
+        r.headers['Cache-Control'] = 'immutable'
+        return r
 
     app.register_blueprint(bp)

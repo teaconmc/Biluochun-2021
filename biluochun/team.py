@@ -18,6 +18,14 @@ def init_team_api(app):
     Initialize the app with /api/team endpoints series.
     '''
     bp = Blueprint('team', __name__, url_prefix = '/api/team')
+
+    @bp.after_request
+    def cdn_please_stop(r):
+        r.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        r.headers['Pragma'] = 'no-cache'
+        r.headers['Expires'] = '0'
+        r.headers['Cache-Control'] = 'public, max-age=0'
+        return r
     
     @bp.route('/', methods = [ 'GET' ])
     def list_all_teams():

@@ -47,23 +47,4 @@ def create_app():
     def index():
         return {} # Empty json, implying "it is at least running"
 
-    @app.after_request
-    def cdn_please_stop(r):
-        r.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-        r.headers['Pragma'] = 'no-cache'
-        r.headers['Expires'] = '0'
-        r.headers['Cache-Control'] = 'public, max-age=0'
-        return r
-
-    @app.after_request
-    def cdn_please_do_this_for_images(r):
-        r.headers['Cache-Control'] = 'immutable'
-
-    app.after_request_funcs = {
-        'image': [ cdn_please_do_this_for_images ],
-        'azure': [ cdn_please_stop ],
-        'dashboard': [ cdn_please_stop ],
-        'team': [ cdn_please_stop ],
-        'users': [ cdn_please_stop ]
-    }
     return app

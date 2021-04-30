@@ -17,6 +17,14 @@ def init_dashboard(app):
     '''
     bp = Blueprint('dashboard', __name__, url_prefix = '/api/profile')
 
+    @bp.after_request
+    def cdn_please_stop(r):
+        r.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        r.headers['Pragma'] = 'no-cache'
+        r.headers['Expires'] = '0'
+        r.headers['Cache-Control'] = 'public, max-age=0'
+        return r
+
     @bp.route('/logout', methods = [ 'POST' ])
     @login_required
     def logout():

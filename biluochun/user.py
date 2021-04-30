@@ -15,6 +15,14 @@ def init_users_api(app):
 
     bp = Blueprint('users', __name__, url_prefix = '/api/users')
 
+    @bp.after_request
+    def cdn_please_stop(r):
+        r.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        r.headers['Pragma'] = 'no-cache'
+        r.headers['Expires'] = '0'
+        r.headers['Cache-Control'] = 'public, max-age=0'
+        return r
+
     @bp.route('/')
     def list_users():
         return jsonify([user_summary(user) for user in User.query.all()])
