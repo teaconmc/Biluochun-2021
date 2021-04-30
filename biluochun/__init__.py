@@ -9,6 +9,7 @@ from flask_cors import CORS
 
 from .authz import init_authz
 from .dashboard import init_dashboard
+from .image import init_image
 from .model import init_db
 from .team import init_team_api
 from .user import init_users_api
@@ -33,11 +34,12 @@ def create_app():
     app.wsgi_app = ReverseProxied(app.wsgi_app)
     app.config.from_envvar('BILUOCHUN_CONFIG_PATH')
     # Wrapped with CORS
-    CORS(app, supports_credentials = True)
+    CORS(app, supports_credentials = True, vary_header = True)
 
     init_db(app)
     init_authz(app)
     init_dashboard(app)
+    init_image(app)
     init_team_api(app)
     init_users_api(app)
 

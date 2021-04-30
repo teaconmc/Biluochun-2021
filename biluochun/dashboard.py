@@ -2,14 +2,13 @@
 Defines /api/profie endpoints series.
 '''
 
-from io import BytesIO
-
-from flask import Blueprint, Response, send_file
+from flask import Blueprint, redirect, url_for
 from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
 from flask_login import current_user, login_required, logout_user
+from sqlalchemy import func
 
 from .form import Avatar, TeamInvite, UserInfo
-from .model import OAuth, Team, db
+from .model import Image, OAuth, Team, db
 from .util import cleanse_profile_pic, find_team_by_invite, team_summary
 
 def init_dashboard(app):
@@ -91,11 +90,7 @@ def init_dashboard(app):
     @bp.route('/profile_pic', methods = [ 'GET' ])
     @login_required
     def get_avatar():
-        img = current_user.profile_pic
-        if img is None or len(img) == 0:
-            return Response(None, 204)
-        else:
-            return send_file(BytesIO(img), mimetype = 'image/png')
+        return redirect(url_for('image.get_image', img_id = current_user.profile_pic_id))
 
     @bp.route('/avatar', methods = [ 'POST' ])
     @bp.route('/profile_pic', methods = [ 'POST' ])
@@ -103,7 +98,14 @@ def init_dashboard(app):
     def update_avatar():
         form = Avatar()
         if form.validate_on_submit():
-            current_user.profile_pic = cleanse_profile_pic(form.avatar.data)
+            next_id = db.session.query(func.max(Image.id)).first()[0]
+            if next_id:
+                next_id += 1
+            else:
+                next_id = 3
+            avatar = Image(next_id, data = cleanse_profile_pic(form.avatar.data))
+            db.session.add(avatar)
+            current_user.profile_pic_id = next_id
             db.session.commit()
             return {}
         else:

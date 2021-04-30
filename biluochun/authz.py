@@ -44,7 +44,8 @@ def init_authz(app):
                     next_id += 1
                 else:
                     next_id = 1
-                user = User(id = next_id, ms_id = uid, name = ms_profile['displayName'])
+                user = User(id = next_id, ms_id = uid, name = ms_profile['displayName'], \
+                    profile_pic_id = 1)
                 db.session.add(user)
                 db.session.commit()
             login_user(user)

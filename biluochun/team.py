@@ -2,16 +2,15 @@
 Defines /api/team endpoints series.
 '''
 
-from io import BytesIO
 import secrets
 
-from flask import Blueprint, request, send_file
+from flask import Blueprint, redirect, url_for
 from flask.json import jsonify
 from flask_login import current_user, login_required
 from sqlalchemy import func
 
 from .form import Avatar, TeamInfo
-from .model import Team, db
+from .model import Image, Team, db
 from .util import cleanse_profile_pic, find_team_by_name, team_summary, user_summary
 
 def init_team_api(app):
@@ -34,7 +33,8 @@ def init_team_api(app):
             else:
                 next_id = 1
             new_team = Team(id = next_id, name = f"{current_user.name}'s team", \
-                mod_name = f"{current_user.name}'s mod", invite = secrets.token_hex(8))
+                mod_name = f"{current_user.name}'s mod", invite = secrets.token_hex(8), \
+                profile_pic_id = 2)
             current_user.team_id = new_team.id
             form = TeamInfo()
             if form.validate_on_submit():
@@ -106,8 +106,9 @@ def init_team_api(app):
     @bp.route('/<int:team_id>/profile_pic', methods = [ 'GET' ])
     def get_team_icon(team_id):
         team = Team.query.get(team_id)
-        return ({ 'error': 'No such team' }, 404) if team is None \
-            else send_file(BytesIO(team.profile_pic), mimetype = 'image/png')
+        if team is None:
+            return { 'error': 'No such team' }, 404
+        return redirect(url_for('image.get_image', img_id = team.profile_pic_id))
     
     @bp.route('/<int:team_id>/avatar', methods = [ 'POST' ])
     @bp.route('/<int:team_id>/icon', methods = [ 'POST' ])
@@ -121,7 +122,14 @@ def init_team_api(app):
             return { 'error': f"You are not in team '{team.name}'!" }, 400
         form = Avatar()
         if form.validate_on_submit():
-            team.profile_pic = cleanse_profile_pic(form.avatar.data)
+            next_id = db.session.query(func.max(Image.id)).first()[0]
+            if next_id:
+                next_id += 1
+            else:
+                next_id = 3
+            avatar = Image(next_id, data = cleanse_profile_pic(form.avatar.data))
+            db.session.add(avatar)
+            team.profile_pic_id = avatar.id
             db.session.commit()
             return {}
         else:

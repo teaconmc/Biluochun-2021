@@ -1,8 +1,16 @@
 import hashlib
 import os
 
+# List of valid origin domains for CORS purpose.
+CORS_ORIGINS = [ 'localhost' ]
+
 # URL to the frontend that user will be redirect to after login completed.
 FRONTEND_URL = 'http://example.com'
+
+# URL to the default user avatar
+BILUOCHUN_DEFAULT_USER_AVATAR = 'http://example.com'
+# URL to the default team avatar
+BILUOCHUN_DEFAULT_TEAM_AVATAR = 'http://example.com'
 
 # Secret key used for CSRF token and others
 SECRET_KEY = hashlib.sha512(b"BILUOCHUN").hexdigest()

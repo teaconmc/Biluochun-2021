@@ -1,6 +1,8 @@
-from io import BytesIO
+'''
+Defines /api/users endpoints series.
+'''
 
-from flask import Blueprint, send_file
+from flask import Blueprint, redirect, url_for
 from flask.json import jsonify
 
 from .model import User
@@ -27,7 +29,7 @@ def init_users_api(app):
     def show_user_avatar(user_id):
         user = User.query.get(user_id)
         if user is None:
-            return { 'error': 'No such user' }
-        return send_file(BytesIO(user.profile_pic), mimetype = 'image/png')
+            return { 'error': 'No such user' }, 404
+        return redirect(url_for('image.get_image', img_id = user.profile_pic_id))
 
     app.register_blueprint(bp)

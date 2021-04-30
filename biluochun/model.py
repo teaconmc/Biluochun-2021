@@ -21,7 +21,8 @@ class Team(db.Model):
     name = db.Column(db.Unicode(128), nullable = False, unique = True)
     mod_name = db.Column(db.Unicode(128), nullable = False, unique = True)
     invite = db.Column(db.String(16), nullable = False, unique = True)
-    profile_pic = db.Column(db.LargeBinary)
+    profile_pic_id = db.Column(db.Integer, db.ForeignKey("image.id"), nullable = False)
+    profile_pic = db.relationship('Image')
     description = db.Column(db.UnicodeText)
     repo = db.Column(db.Text)
     members = db.relationship('User', backref = 'user', lazy = True)
@@ -36,7 +37,8 @@ class User(db.Model, flask_login.UserMixin):
     id = db.Column(db.Integer, primary_key = True)
     ms_id = db.Column(db.String(16), nullable = False, unique = True)
     name = db.Column(db.Unicode(128), nullable = False, unique = True)
-    profile_pic = db.Column(db.LargeBinary)
+    profile_pic_id = db.Column(db.Integer, db.ForeignKey("image.id"), nullable = False)
+    profile_pic = db.relationship('Image')
     team_id = db.Column(db.Integer, db.ForeignKey("team.id"))
     team = db.relationship(Team)
 
@@ -45,6 +47,13 @@ class User(db.Model, flask_login.UserMixin):
     
     def __repr__(self):
         return f"<User #{self.id} '{self.name}'"
+
+class Image(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    data = db.Column(db.LargeBinary)
+
+    def __repr__(self):
+        return f"<Image #{self.id}>"
 
 class OAuth(db.Model, OAuthConsumerMixin):
     '''
@@ -60,3 +69,7 @@ def init_db(app):
     db.init_app(app)
     with app.app_context():
         db.create_all()
+        if Image.query.get(1) is None:
+            db.session.add(Image(id = 1, data = b''))
+        if Image.query.get(2) is None:
+            db.session.add(Image(id = 2, data = b''))
