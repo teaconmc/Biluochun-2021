@@ -4,11 +4,19 @@ Defines web form structures used by Biluochun.
 
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField, FileRequired
+from PIL import Image, UnidentifiedImageError
 from wtforms import StringField
 from wtforms.validators import Length, Optional, URL, ValidationError
 
 from .model import User
 from .util import find_team_by_invite, find_team_by_mod_name, find_team_by_name
+
+def validate_image(form, field):
+    try:
+        with Image.open(field.data):
+            pass
+    except UnidentifiedImageError as exc:
+        raise ValidationError("The uploaded file is not image or is a broken image.") from exc
 
 def validate_invite(form, field):
     if field.data is None:
@@ -47,7 +55,8 @@ class Avatar(FlaskForm):
         csrf = False
     avatar = FileField('avatar', validators = [
         FileRequired(),
-        FileAllowed([ 'jpg', 'jpe', 'jpeg', 'png', 'gif', 'svg', 'bmp', 'webp' ]) 
+        FileAllowed([ 'jpg', 'jpe', 'jpeg', 'png', 'gif', 'svg', 'bmp', 'webp' ]),
+        validate_image
     ])
 
 class UserInfo(FlaskForm):
