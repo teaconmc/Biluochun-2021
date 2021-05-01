@@ -2,6 +2,8 @@
 Defines /api/profie endpoints series.
 '''
 
+import secrets
+
 from flask import Blueprint, redirect, url_for
 from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
 from flask_login import current_user, login_required, logout_user
@@ -81,6 +83,11 @@ def init_dashboard(app):
                 current_user.team_id = team.id
                 db.session.commit()
                 return {}
+            else:
+                return {
+                    'error': 'Form contains error. Check "details" field for more information.',
+                    'details': form.errors
+                }, 400
         return {
             'error': 'You have joined a team!'
         }, 409
@@ -123,6 +130,16 @@ def init_dashboard(app):
                 'error': 'Form contains error. Check "details" field for more information.',
                 'details': form.errors
             }, 400
+
+    @bp.route('/team/invite', methods = [ 'POST' ])
+    @login_required
+    def reset_invite():
+        team = current_user.team
+        if team is None:
+            return { 'error': 'You are not in a team yet!' }, 404
+        new_invite = secrets.token_hex(8)
+        team.invite = new_invite
+        return { 'invite': new_invite }
 
     bp.storage = SQLAlchemyStorage(OAuth, db.session, user = current_user)
     app.register_blueprint(bp)

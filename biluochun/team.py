@@ -145,17 +145,5 @@ def init_team_api(app):
                 'error': 'Form contains error. Check "details" field for more information.',
                 'details': form.errors
             }, 400
-    
-    @bp.route('/<int:team_id>/invite', methods = [ 'POST' ])
-    @login_required
-    def reset_invite(team_id):
-        team = Team.query.get(team_id)
-        if team is None:
-            return { 'error': 'No such team' }, 404
-        if current_user.team_id != team.id:
-            return { 'error': f"You are not in team '{team.name}'!" }, 400
-        new_invite = secrets.token_hex(8)
-        team.invite = new_invite
-        return { 'invite': new_invite }
 
     app.register_blueprint(bp)
