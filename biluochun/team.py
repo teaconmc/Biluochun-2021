@@ -132,7 +132,7 @@ def init_team_api(app):
         if form.validate_on_submit():
             next_id = db.session.query(func.max(Image.id)).first()[0]
             if next_id:
-                while db.query.get(next_id) is not None:
+                while Image.query.get(next_id) is not None:
                     next_id += 1
             else:
                 next_id = 3
