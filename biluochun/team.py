@@ -21,10 +21,9 @@ def init_team_api(app):
 
     @bp.after_request
     def cdn_please_stop(r):
-        r.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        r.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, public, max-age=0'
         r.headers['Pragma'] = 'no-cache'
         r.headers['Expires'] = '0'
-        r.headers['Cache-Control'] = 'public, max-age=0'
         return r
     
     @bp.route('/', methods = [ 'GET' ])
