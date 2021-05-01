@@ -24,7 +24,7 @@ def validate_team_name(form, field):
 
 def validate_mod_name(form, field):
     target_team = form.target_team
-    existing_team = find_team_by_name(field.data)
+    existing_team = find_team_by_mod_name(field.data)
     if existing_team is not None and existing_team != target_team:
         raise ValidationError(f"Mod name '{field.data}' already exist")
 
@@ -33,6 +33,14 @@ def validate_user(form, field):
         raise ValidationError("User id is missing")
     if User.query.get(field.data) is None:
         raise ValidationError(f"User #{field.data} does not exist")
+
+def validate_username(form, field):
+    if field.data is None:
+        raise ValidationError("Username cannot be empty")
+    target_user = form.target_user
+    existing_user = User.query.filter_by(name = field.data).first()
+    if existing_user is not None and existing_user != target_user:
+        raise ValidationError(f"Username #{field.data} has been used")
 
 class Avatar(FlaskForm):
     class Meta:
@@ -45,7 +53,15 @@ class Avatar(FlaskForm):
 class UserInfo(FlaskForm):
     class Meta:
         csrf = False
-    name = StringField('name', validators = [ Length(min = 1, max = 128), Optional() ])
+    name = StringField('name', validators = [ 
+        Length(min = 1, max = 128),
+        validate_username,
+        Optional()
+    ])
+
+    def __init__(self, target_user = None, *args, **kwargs):
+        super(UserInfo, self).__init__(*args, **kwargs)
+        self.target_user = target_user
 
 class TeamInfo(FlaskForm):
     class Meta:

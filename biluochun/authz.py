@@ -1,3 +1,5 @@
+import secrets
+
 from flask import render_template
 from flask_dance.contrib.azure import azure, make_azure_blueprint
 from flask_login import LoginManager, login_user
@@ -51,7 +53,11 @@ def init_authz(app):
                     next_id += 1
                 else:
                     next_id = 1
-                user = User(id = next_id, ms_id = uid, name = ms_profile['displayName'], \
+                display_name = ms_profile['displayName']
+                # I don't believe someone will trigger this loop twice
+                while User.query.filter_by(name = display_name).first() is not None:
+                    display_name += f" {secrets.token_hex(8)}"
+                user = User(id = next_id, ms_id = uid, name = display_name, \
                     profile_pic_id = 1)
                 db.session.add(user)
                 db.session.commit()

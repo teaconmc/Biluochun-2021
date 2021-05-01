@@ -51,7 +51,7 @@ def init_dashboard(app):
     @bp.route('/', methods = [ 'POST' ])
     @login_required
     def update_personal_info():
-        form = UserInfo()
+        form = UserInfo(target_user = current_user)
         if form.validate_on_submit():
             current_user.name = form.name.data
             db.session.commit()
