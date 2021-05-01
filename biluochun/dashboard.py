@@ -138,6 +138,7 @@ def init_dashboard(app):
             return { 'error': 'You are not in a team yet!' }, 404
         new_invite = secrets.token_hex(8)
         team.invite = new_invite
+        db.session.commit()
         return { 'invite': new_invite }
 
     bp.storage = SQLAlchemyStorage(OAuth, db.session, user = current_user)
