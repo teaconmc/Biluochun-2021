@@ -46,8 +46,8 @@ class UserInfo(FlaskForm):
 class TeamInfo(FlaskForm):
     class Meta:
         csrf = False
-    name = StringField('name', validators = [ Length(min = 1, max = 128), Optional() ])
-    mod_name = StringField('mod_name', validators = [ Length(min = 1, max = 128), Optional() ])
+    name = StringField('name', validators = [ Length(min = 1, max = 128), validate_team_name, Optional() ])
+    mod_name = StringField('mod_name', validators = [ Length(min = 1, max = 128), validate_mod_name, Optional() ])
     desc = StringField('desc', validators = [ Optional() ])
     repo = StringField('repo', validators = [ URL(), Optional() ])
 
