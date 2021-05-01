@@ -84,7 +84,7 @@ def init_team_api(app):
             return { 'error': 'No such team' }, 404
         if current_user.team_id != team.id:
             return { 'error': f"You are not in team '{team.name}'!" }, 400
-        form = TeamInfo()
+        form = TeamInfo(target_team = team)
         if form.validate_on_submit():
             if form.name.data is not None:
                 team.name = form.name.data
