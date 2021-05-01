@@ -8,13 +8,17 @@ from wtforms import StringField
 from wtforms.validators import Length, Optional, URL, ValidationError
 
 from .model import User
-from .util import find_team_by_invite
+from .util import find_team_by_invite, find_team_by_name
 
 def validate_invite(form, field):
     if field.data is None:
         raise ValidationError("Team invite code is missing")
     if find_team_by_invite(field.data) is None:
         raise ValidationError("Team invite code does not exist")
+
+def validate_team_name(form, field):
+    if find_team_by_name(field.data) is None:
+        raise ValidationError(f"Team name '{field.data}' already exist")
 
 def validate_user(form, field):
     if field.data is None:
