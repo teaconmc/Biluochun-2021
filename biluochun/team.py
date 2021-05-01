@@ -66,7 +66,7 @@ def init_team_api(app):
             return { 'error': 'You have already been in a team!' }, 400
 
     # Used for determining if a team name if available
-    @bp.route('/name/<str:team_name>', methods = [ 'GET' ])
+    @bp.route('/name/<team_name>', methods = [ 'GET' ])
     def show_team_by_name(team_name):
         team = find_team_by_name(team_name)
         return { 'resutl': team is None }
