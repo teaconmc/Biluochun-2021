@@ -23,6 +23,9 @@ def find_team_by_invite(invite_code):
 def find_team_by_name(team_name):
     return Team.query.filter_by(name = team_name).first()
 
+def find_team_by_mod_name(mod_name):
+    return Team.query.filter_by(mod_name = mod_name).first()
+
 def team_summary(team, detailed = False, invitation = False):
     info = { 'id': team.id, 'name': team.name, 'mod_name': team.mod_name, 'repo': team.repo }
     if detailed:
