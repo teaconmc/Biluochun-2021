@@ -36,12 +36,6 @@ def validate_mod_name(form, field):
     if existing_team is not None and existing_team != target_team:
         raise ValidationError(f"Mod name '{field.data}' already exist")
 
-def validate_user(form, field):
-    if field.data is None:
-        raise ValidationError("User id is missing")
-    if User.query.get(field.data) is None:
-        raise ValidationError(f"User #{field.data} does not exist")
-
 def validate_username(form, field):
     if field.data is None:
         raise ValidationError("Username cannot be empty")

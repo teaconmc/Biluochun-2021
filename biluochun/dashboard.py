@@ -52,7 +52,8 @@ def init_dashboard(app):
     def update_personal_info():
         form = UserInfo(target_user = current_user)
         if form.validate_on_submit():
-            current_user.name = form.name.data
+            if form.name.data:
+                current_user.name = form.name.data
             db.session.commit()
             return {}
         else:

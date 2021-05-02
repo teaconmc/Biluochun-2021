@@ -47,6 +47,10 @@ def init_authz(app):
             user = User.query.filter_by(ms_id = uid).first()
             if user is None:
                 display_name = ms_profile['displayName']
+                # On what earth someone doesn't have a name?!
+                # However our server backlog shows that this indeed happened.
+                if not display_name:
+                    display_name = f"User {secrets.token_hex(8)}"
                 # I don't believe someone will trigger this loop twice
                 while User.query.filter_by(name = display_name).first() is not None:
                     display_name += f" {secrets.token_hex(8)}"
