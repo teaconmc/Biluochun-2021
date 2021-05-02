@@ -7,7 +7,6 @@ import secrets
 from flask import Blueprint, redirect, url_for
 from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
 from flask_login import current_user, login_required, logout_user
-from sqlalchemy import func
 
 from .form import Avatar, TeamInvite, UserInfo
 from .model import Image, OAuth, Team, db
@@ -79,7 +78,7 @@ def init_dashboard(app):
                 team = find_team_by_invite(form.invite_code.data)
                 if len(team.members) <= 0:
                     return { 'error': 'Cannot join abandonded team' }, 403
-                current_user.team_id = team.id
+                current_user.team = team
                 db.session.commit()
                 return {}
             else:
@@ -114,15 +113,7 @@ def init_dashboard(app):
     def update_avatar():
         form = Avatar()
         if form.validate_on_submit():
-            next_id = db.session.query(func.max(Image.id)).first()[0]
-            if next_id:
-                while Image.query.get(next_id) is not None:
-                    next_id += 1
-            else:
-                next_id = 3
-            avatar = Image(id = next_id, data = cleanse_profile_pic(form.avatar.data))
-            db.session.add(avatar)
-            current_user.profile_pic_id = next_id
+            current_user.profile_pic = Image(id = None, data = cleanse_profile_pic(form.avatar.data))
             db.session.commit()
             return {}
         else:

@@ -7,7 +7,6 @@ import secrets
 from flask import Blueprint, redirect, url_for
 from flask.json import jsonify
 from flask_login import current_user, login_required
-from sqlalchemy import func
 
 from .form import Avatar, TeamInfo
 from .model import Image, Team, db
@@ -34,15 +33,10 @@ def init_team_api(app):
     @login_required
     def create_team():
         if current_user.team_id is None:
-            next_id = db.session.query(func.max(Team.id)).first()[0]
-            if next_id:
-                next_id += 1
-            else:
-                next_id = 1
-            new_team = Team(id = next_id, name = f"{current_user.name}'s team", \
+            new_team = Team(id = None, name = f"{current_user.name}'s team", \
                 mod_name = f"{current_user.name}'s mod", invite = secrets.token_hex(8), \
                 profile_pic_id = 2)
-            current_user.team_id = new_team.id
+            current_user.team = new_team
             form = TeamInfo()
             if form.validate_on_submit():
                 if form.name.data is not None:
@@ -130,15 +124,7 @@ def init_team_api(app):
             return { 'error': f"You are not in team '{team.name}'!" }, 400
         form = Avatar()
         if form.validate_on_submit():
-            next_id = db.session.query(func.max(Image.id)).first()[0]
-            if next_id:
-                while Image.query.get(next_id) is not None:
-                    next_id += 1
-            else:
-                next_id = 3
-            avatar = Image(id = next_id, data = cleanse_profile_pic(form.avatar.data))
-            db.session.add(avatar)
-            team.profile_pic_id = avatar.id
+            team.profile_pic = Image(id = None, data = cleanse_profile_pic(form.avatar.data))
             db.session.commit()
             return {}
         else:

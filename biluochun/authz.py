@@ -3,10 +3,8 @@ import secrets
 from flask import render_template
 from flask_dance.contrib.azure import azure, make_azure_blueprint
 from flask_login import LoginManager, login_user
-from sqlalchemy import func
 
 from .model import User, db
-from .util import team_summary
 
 def init_authz(app):
     bp = make_azure_blueprint(
@@ -48,16 +46,11 @@ def init_authz(app):
             uid = ms_profile['id'].lower()
             user = User.query.filter_by(ms_id = uid).first()
             if user is None:
-                next_id = db.session.query(func.max(User.id)).first()[0]
-                if next_id:
-                    next_id += 1
-                else:
-                    next_id = 1
                 display_name = ms_profile['displayName']
                 # I don't believe someone will trigger this loop twice
                 while User.query.filter_by(name = display_name).first() is not None:
                     display_name += f" {secrets.token_hex(8)}"
-                user = User(id = next_id, ms_id = uid, name = display_name, \
+                user = User(id = None, ms_id = uid, name = display_name, \
                     profile_pic_id = 1)
                 db.session.add(user)
                 db.session.commit()
