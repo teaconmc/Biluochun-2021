@@ -22,14 +22,13 @@ def init_webhook_config(app):
     WEBHOOK_ENABLED = app.config["WEBHOOK_ENABLED"]
 
 
-def trigger_webhook(team: Team, event: str):
+async def trigger_webhook(team: Team, event: str):
     if not WEBHOOK_ENABLED:
         sys.stderr.write("Webhook is not enabled.\n")
         return
     try:
         body_str = json.dumps({
             'event': event,  # update or create
-            'webhook_secret': WEBHOOK_SECRET,
             'id': team.id,
             'name': team.name,
             'mod_name': team.mod_name,
@@ -43,6 +42,5 @@ def trigger_webhook(team: Team, event: str):
         s = requests.Session()
         s.headers.update({"HmacSha256": h.hexdigest()})
         s.post(WEBHOOK_URL, data=body)
-        # TODO, we still don't know how to asynchronize this
     except Exception as ex:
         sys.stderr.write("Failed to send webhook request: {}\n".format(ex))

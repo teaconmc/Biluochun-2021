@@ -10,6 +10,7 @@ gunicorn
 Pillow
 SQLAlchemy==1.4.12
 WTForms
+httpx
 
 # Dev-only dependencies
 pylint
