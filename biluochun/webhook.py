@@ -20,8 +20,9 @@ def init_webhook_config(app):
     WEBHOOK_ENABLED = app.config["WEBHOOK_ENABLED"]
 
 
-def trigger_webhook(team: Team, event: str):
+async def trigger_webhook(team: Team, event: str):
     if not WEBHOOK_ENABLED:
+        print("Webhook is not enabled.")
         return
     try:
         requests.post(WEBHOOK_URL, json=json.dumps({
