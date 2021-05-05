@@ -3,7 +3,6 @@ Webhook utils.
 """
 import json
 import sys
-import traceback
 
 import requests
 import hmac
