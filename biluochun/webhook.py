@@ -24,7 +24,7 @@ def init_webhook_config(app):
 
 def trigger_webhook(team: Team, event: str):
     if not WEBHOOK_ENABLED:
-        print("Webhook is not enabled.")
+        sys.stderr.write("Webhook is not enabled.\n")
         return
     try:
         body_str = json.dumps({
