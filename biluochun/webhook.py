@@ -3,6 +3,7 @@ Webhook utils.
 """
 import json
 import sys
+import traceback
 
 import requests
 import hmac
@@ -22,7 +23,7 @@ def init_webhook_config(app):
     WEBHOOK_ENABLED = app.config["WEBHOOK_ENABLED"]
 
 
-async def trigger_webhook(team: Team, event: str):
+def trigger_webhook(team: Team, event: str):
     if not WEBHOOK_ENABLED:
         sys.stderr.write("Webhook is not enabled.\n")
         return
@@ -43,4 +44,5 @@ async def trigger_webhook(team: Team, event: str):
         s.headers.update({"HmacSha256": h.hexdigest()})
         s.post(WEBHOOK_URL, data=body)
     except Exception as ex:
-        sys.stderr.write("Failed to send webhook request: {}\n".format(ex))
+        sys.stderr.write("Failed to send webhook request: \n")
+        traceback.print_exception(ex)
