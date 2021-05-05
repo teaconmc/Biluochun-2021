@@ -13,6 +13,7 @@ from .image import init_image
 from .model import init_db
 from .team import init_team_api
 from .user import init_users_api
+from .webhook import init_webhook_config
 
 class ReverseProxied():
     '''
@@ -42,6 +43,7 @@ def create_app():
     init_image(app)
     init_team_api(app)
     init_users_api(app)
+    init_webhook_config(app)
 
     @app.route('/')
     def index():

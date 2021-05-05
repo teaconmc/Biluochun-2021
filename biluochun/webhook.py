@@ -8,7 +8,16 @@ import requests
 from .model import Team
 from .util import user_summary
 
-global WEBHOOK_URL, WEBHOOK_SECRET, WEBHOOK_ENABLED
+WEBHOOK_URL = ""
+WEBHOOK_SECRET = ""
+WEBHOOK_ENABLED = False
+
+
+def init_webhook_config(app):
+    global WEBHOOK_URL, WEBHOOK_SECRET, WEBHOOK_ENABLED
+    WEBHOOK_URL = app.config["WEBHOOK_URL"]
+    WEBHOOK_SECRET = app.config["WEBHOOK_SECRET"]
+    WEBHOOK_ENABLED = app.config["WEBHOOK_ENABLED"]
 
 
 def trigger_webhook(team: Team, event: str):
