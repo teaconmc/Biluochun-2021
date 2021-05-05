@@ -41,7 +41,7 @@ def trigger_webhook(team: Team, event: str):
         h = hmac.new(WEBHOOK_SECRET, body, hashlib.sha256)
 
         s = requests.Session()
-        s.headers.update({"Content-Type": "application/json", "HmacSha256": h.hexdigest()})
+        s.headers.update({"HmacSha256": h.hexdigest()})
         s.post(WEBHOOK_URL, data=body)
         # TODO, we still don't know how to asynchronize this
     except Exception as ex:
