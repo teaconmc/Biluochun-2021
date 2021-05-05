@@ -41,7 +41,7 @@ def trigger_webhook(team: Team, event: str):
         h = hmac.new(WEBHOOK_SECRET, body, hashlib.sha256)
 
         s = requests.Session()
-        s.headers.update({"HmacSha256": h.hexdigest(), "Content-Type": "application/json"})
+        s.headers.update({"X-TeaCon-Signature": h.hexdigest(), "Content-Type": "application/json"})
         s.post(WEBHOOK_URL, data=body)
     except Exception as ex:
         sys.stderr.write("Failed to send webhook request: {}\n".format(str(ex)))
