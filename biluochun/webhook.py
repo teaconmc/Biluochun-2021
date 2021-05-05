@@ -44,5 +44,4 @@ def trigger_webhook(team: Team, event: str):
         s.headers.update({"HmacSha256": h.hexdigest()})
         s.post(WEBHOOK_URL, data=body)
     except Exception as ex:
-        sys.stderr.write("Failed to send webhook request: \n")
-        traceback.print_exception(ex)
+        sys.stderr.write("Failed to send webhook request: {}\n".format(str(ex)))
