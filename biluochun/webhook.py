@@ -42,7 +42,7 @@ def trigger_webhook(team: Team, event: str):
 
         s = requests.Session()
         s.headers.update({"Content-Type": "application/json", "HmacSha256": h.hexdigest()})
-        s.post(WEBHOOK_URL, body)
+        s.post(WEBHOOK_URL, data=body)
         # TODO, we still don't know how to asynchronize this
     except Exception as ex:
         sys.stderr.write("Failed to send webhook request: {}\n".format(ex))
