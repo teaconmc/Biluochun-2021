@@ -34,6 +34,7 @@ def trigger_webhook(team: Team, event: str):
             'mod_name': team.mod_name,
             'members': [user_summary(member) for member in team.members],
             'profile_pic_id': team.profile_pic_id,
+            'description': team.description,
         }, ensure_ascii=False)
         body = bytes(body_str, "utf-8")
 
