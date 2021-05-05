@@ -23,3 +23,4 @@ private
 log
 *.db
 *.sh
+.idea/

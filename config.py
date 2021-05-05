@@ -31,3 +31,7 @@ SESSION_COOKIE_HTTPONLY = True
 # Same for 'remember me' cookies used by Flask-Login, although we don't use that currently
 REMEMBER_COOKIE_HTTPONLY = True
 REMEMBER_COOKIE_SECURE = True
+
+WEBHOOK_ENABLED = False
+WEBHOOK_URL = "http://localhost:8456/biluochun"
+WEBHOOK_SECRET = "WEBHOOK_SECRET"

@@ -11,6 +11,7 @@ from flask_login import current_user, login_required
 from .form import Avatar, TeamInfo
 from .model import Image, Team, db
 from .util import cleanse_profile_pic, find_team_by_name, team_summary, user_summary
+from .webhook import trigger_webhook
 
 def init_team_api(app):
     '''
@@ -55,6 +56,7 @@ def init_team_api(app):
             # Commit the changes
             db.session.add(new_team)
             db.session.commit()
+            trigger_webhook(new_team, "create")
             return {}
         else:
             return { 'error': 'You have already been in a team!' }, 400
@@ -90,6 +92,7 @@ def init_team_api(app):
                 team.repo = form.repo.data
             # Commit the changes
             db.session.commit()
+            trigger_webhook(team, "update")
             return {}
         else:
             return {
