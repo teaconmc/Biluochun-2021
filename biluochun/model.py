@@ -88,6 +88,7 @@ class Blacklist(db.Model):
     '''
     A blacklist entry defines a blocked user.
     '''
+    entry_id = db.Column(db.Integer, primary_key = True)
     user_id = db.Column(db.Integer, db.ForeignKey(User.id))
     user = db.relationship(User)
 
