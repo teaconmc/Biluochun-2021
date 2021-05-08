@@ -4,7 +4,7 @@ from flask import render_template
 from flask_dance.contrib.azure import azure, make_azure_blueprint
 from flask_login import LoginManager, login_user
 
-from .model import User, db
+from .model import Blacklist, User, db
 
 def init_authz(app):
     bp = make_azure_blueprint(
@@ -58,6 +58,8 @@ def init_authz(app):
                     profile_pic_id = 1)
                 db.session.add(user)
                 db.session.commit()
+            if Blacklist.query.filter_by(user_id = user.id).first():
+                return { 'error': 'You are blacklisted' }, 403
             login_user(user)
             return render_template('complete.html')
         else:

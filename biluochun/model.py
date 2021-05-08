@@ -84,6 +84,13 @@ class OAuth(db.Model, OAuthConsumerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey(User.id))
     user = db.relationship(User)
 
+class Blacklist(db.Model):
+    '''
+    A blacklist entry defines a blocked user.
+    '''
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
+    user = db.relationship(User)
+
 def init_db(app):
     '''
     Initialize the database. Tables are created if not existed yet.
