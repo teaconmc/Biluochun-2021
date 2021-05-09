@@ -1,0 +1,8 @@
+.git
+.gitignore
+.pylintrc
+.idea
+.venv
+Dockerfile
+.dockerignore
+README.md
