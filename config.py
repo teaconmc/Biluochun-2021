@@ -18,7 +18,7 @@ AZURE_OAUTH_CLIENT_SECRET = None
 
 # URL that points to your SQL database. SQLite is used here for dev purpose.
 # Major implmenetations such as MySQL and PostgesSQL also works here.
-SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.getcwd()}/dev.db"
+SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.getcwd()}/data/prod.db"
 
 # Hush.
 SQLALCHEMY_TRACK_MODIFICATIONS = False
