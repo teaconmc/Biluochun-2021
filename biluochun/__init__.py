@@ -47,6 +47,6 @@ def create_app():
 
     @app.route('/')
     def index():
-        return {} # Empty json, implying "it is at least running"
+        return {"version": "1"}
 
     return app
