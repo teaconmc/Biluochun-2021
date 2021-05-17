@@ -28,7 +28,7 @@ def init_team_api(app):
     
     @bp.route('/', methods = [ 'GET' ])
     def list_all_teams():
-        return jsonify([team_summary(team) for team in Team.query.all()])
+        return jsonify([team_summary(team) for team in Team.query.all() if team.members ])
 
     @bp.route('/', methods = [ 'POST' ])
     @login_required

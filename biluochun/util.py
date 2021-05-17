@@ -27,9 +27,18 @@ def find_team_by_mod_name(mod_name):
     return Team.query.filter_by(mod_name = mod_name).first()
 
 def team_summary(team, detailed = False, invitation = False):
-    info = { 'id': team.id, 'name': team.name, 'mod_name': team.mod_name, 'repo': team.repo }
+    '''
+    Collect information from a team into a dictionary.
+    ''' # TODO Arguments documentation
+    info = {
+        'id': team.id,
+        'name': team.name,
+        'mod_name': team.mod_name,
+        'repo': team.repo
+    }
     if detailed:
         info['desc'] = team.description
+        info['disbanded'] = not bool(team.members)
     if invitation:
         info['invite'] = team.invite
     return info
