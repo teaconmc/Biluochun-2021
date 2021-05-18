@@ -4,7 +4,7 @@ Defines /api/team endpoints series.
 
 import secrets
 
-from flask import Blueprint, redirect, url_for
+from flask import Blueprint, redirect, request, url_for
 from flask.json import jsonify
 from flask_login import current_user, login_required
 
@@ -28,7 +28,15 @@ def init_team_api(app):
     
     @bp.route('/', methods = [ 'GET' ])
     def list_all_teams():
-        return jsonify([team_summary(team) for team in Team.query.all() if team.members ])
+        # SELECT DISTINCT team.* FROM team
+        #   JOIN user ON team.id = user.team_id
+        #   ORDER BY team.id;
+        teams = Team.query.distinct().join(Team.members).order_by(Team.id)
+        if not request.args.get('all', False, type = bool):
+            page_index = request.args.get('page', 1, type = int)
+            page_size = request.args.get('size', 10, type = int)
+            teams = teams.paginate(page_index, page_size, error_out = False).items
+        return jsonify([team_summary(team) for team in teams])
 
     @bp.route('/', methods = [ 'POST' ])
     @login_required

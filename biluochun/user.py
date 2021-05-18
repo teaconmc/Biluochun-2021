@@ -2,7 +2,7 @@
 Defines /api/users endpoints series.
 '''
 
-from flask import Blueprint, redirect, url_for
+from flask import Blueprint, redirect, request, url_for
 from flask.json import jsonify
 
 from .model import User
@@ -24,7 +24,12 @@ def init_users_api(app):
 
     @bp.route('/')
     def list_users():
-        return jsonify([user_summary(user) for user in User.query.all()])
+        users = User.query.all()
+        if not request.args.get('all', False, type = bool):
+            page_index = request.args.get('page', 1, type = int)
+            page_size = request.args.get('size', 10, type = int)
+            users = users.paginate(page_index, page_size, error_out = False).items
+        return jsonify([user_summary(user) for user in users])
 
     @bp.route('/<int:user_id>')
     def show_user(user_id):
