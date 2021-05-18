@@ -57,9 +57,17 @@ Any endpoints that require authorization will be noted with "Requires authorizat
 
 ### `GET /`
 
-Always gives you `200 OK` with empty JSON Object `{}`. Serves as a simple, crude health check.
+Always gives you `200 OK` with a JSON Object that looks like
 
-### `GET /api/users`
+```json
+{
+  "version": "2"
+}
+```
+
+This endpoint serves as a simple, crude health check.
+
+### `GET /api/users/?all=false&page=1&size=10`
 
 Retrieves all known participtants. The response is always `200 OK` with a JSON Array that looks like
 
@@ -241,7 +249,7 @@ Requires authorization.
 
 If the current user does not belong to a team, `team` field will be `null`.
 
-### `GET /api/profile/avatar/`
+### `GET /api/profile/avatar`
 
 Requires authorization.
 
@@ -257,7 +265,7 @@ Requires authorization.
 
 Synonym of `GET /dashboard/avatar`.
 
-### `POST /api/profile/avatar/`
+### `POST /api/profile/avatar`
 
 Requires authorization.
 
