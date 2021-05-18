@@ -24,11 +24,13 @@ def init_users_api(app):
 
     @bp.route('/')
     def list_users():
-        users = User.query.all()
-        if not request.args.get('all', False, type = bool):
+        users = []
+        if request.args.get('all', False, type = bool):
+            users = User.query.all()
+        else:
             page_index = request.args.get('page', 1, type = int)
             page_size = request.args.get('size', 10, type = int)
-            users = users.paginate(page_index, page_size, error_out = False).items
+            users = User.query.paginate(page_index, page_size, error_out = False).items
         return jsonify([user_summary(user) for user in users])
 
     @bp.route('/<int:user_id>')
