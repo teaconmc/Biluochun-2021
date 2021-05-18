@@ -32,10 +32,18 @@ def init_team_api(app):
         #   JOIN user ON team.id = user.team_id
         #   ORDER BY team.id;
         teams = Team.query.distinct().join(Team.members).order_by(Team.id)
-        if not request.args.get('all', False, type = bool):
+        if 'page' in request.args:
             page_index = request.args.get('page', 1, type = int)
             page_size = request.args.get('size', 10, type = int)
-            teams = teams.paginate(page_index, page_size, error_out = False).items
+            page = teams.paginate(page_index, page_size, error_out = False)
+            return {
+                'current': page.page,
+                'first': 1,
+                'last': page.pages,
+                'prev': page.prev_num,
+                'next': page.next_num,
+                'teams': [team_summary(team) for team in page.items]
+            }
         return jsonify([team_summary(team) for team in teams])
 
     @bp.route('/', methods = [ 'POST' ])

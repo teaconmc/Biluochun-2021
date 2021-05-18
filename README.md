@@ -69,7 +69,8 @@ This endpoint serves as a simple, crude health check.
 
 ### `GET /api/users/?all=false&page=1&size=10`
 
-Retrieves all known participtants. The response is always `200 OK` with a JSON Array that looks like
+Retrieves all known participtants. 
+By default, the response is `200 OK` with a JSON Array that looks like
 
 ```json
 [
@@ -81,18 +82,32 @@ Retrieves all known participtants. The response is always `200 OK` with a JSON A
 
 Array can be empty if no participtants are known to te system (oof).
 
-This endpoint returns paginated result by default. 
+This endpoint also supports pagination. 
 The following query parameters are available to control pagination behavior:
 
   - `page`: specify the page index to display, default to `1` i.e. the first page.
   - `size`: specify the page size (i.e. number of users in a single page), default to `10`.
-  - `all`: If `true`, then return result contains all users (i.e. bypasses pagination).
 
-All of the query parameters listed here are OPTIONAL.
+Pagniated result looks like 
 
-Array MAY also be empty if an invalid page number is specified. 
+```json
+{
+  "current": 3,
+  "first": 1,
+  "last": 3,
+  "next": null,
+  "prev": 2,
+  "users": [
+    { "id": 2, "name": "TeaCon Participtant C" }
+  ]
+}
+```
+
+If pagination is needed, `page` parameter is REQUIRED. `size` is always OPTIONAL.
+
+The `users` array MAY also be empty if an invalid page number is specified. 
 Example: if there are only 20 users, but a `GET /api/users/?page=3` query is received, then the 
-result is an empty array.
+that array is an empty array.
 
 ### `GET /api/users/<user_id>`
 
@@ -135,7 +150,7 @@ Otherwise, a `204 No Content` will be returned.
 Retrieves all known teams. All "disbanded" teams are excluded. A "disbanded" team is a team without 
 any members.
 
-The response is always `200 OK` with a JSON Array that looks like
+By default, the response is `200 OK` with a JSON Array that looks like
 
 ```json
 [
@@ -147,18 +162,33 @@ The response is always `200 OK` with a JSON Array that looks like
 
 Array can be empty if no teams are known to te system (oof).
 
-This endpoint returns paginated result by default. 
+This endpoint also supports pagination. 
 The following query parameters are available to control pagination behavior:
 
   - `page`: specify the page index to display, default to `1` i.e. the first page.
   - `size`: specify the page size (i.e. number of teams in a single page), default to `10`.
   - `all`: If `true`, then return result contains all teams (i.e. bypasses pagination).
 
-All of the query parameters listed here are OPTIONAL.
+Pagniated result looks like 
 
-Array MAY also be empty if an invalid page number is specified. 
+```json
+{
+  "current": 3,
+  "first": 1,
+  "last": 3,
+  "next": null,
+  "prev": 2,
+  "teams": [
+    { "id": 2, "name": "Team C", "repo": "https://github.com/teaconmc/SlideShow" }
+  ]
+}
+```
+
+If pagination is needed, `page` parameter is REQUIRED. `size` is always OPTIONAL.
+
+The `teams` array MAY be empty if an invalid page number is specified. 
 Example: if there are only 20 teams, but a `GET /api/team?page=3` query is received, then the 
-result is an empty array.
+that array is an empty array.
 
 ### `GET /api/team/<team_id>`
 
