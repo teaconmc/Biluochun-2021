@@ -11,7 +11,7 @@ from sqlalchemy.exc import NoResultFound
 
 from .form import Avatar, TeamInvite, UserInfo, QQSet
 from .model import Image, OAuth, Team, db, QQ
-from .qq import check_qq_in_group, is_user_qq_verified
+from .qq import check_qq_in_group, qq_verify_required
 from .util import cleanse_profile_pic, find_team_by_invite, team_summary
 
 
@@ -75,10 +75,9 @@ def init_dashboard(app):
 
     @bp.route('/team', methods=['POST', 'PUT'])
     @login_required
+    @qq_verify_required
     def join_team():
         if current_user.team_id is None:
-            if not is_user_qq_verified(current_user.id):
-                return {'error': 'You need to verify qq first'}, 403
             form = TeamInvite()
             if form.validate_on_submit():
                 team = find_team_by_invite(form.invite_code.data)

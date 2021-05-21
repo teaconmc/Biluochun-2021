@@ -10,7 +10,7 @@ from flask_login import current_user, login_required
 
 from .form import Avatar, TeamInfo
 from .model import Image, Team, db
-from .qq import is_user_qq_verified
+from .qq import qq_verify_required
 from .util import cleanse_profile_pic, find_team_by_name, team_summary, user_summary
 from .webhook import trigger_webhook
 
@@ -50,10 +50,9 @@ def init_team_api(app):
 
     @bp.route('/', methods = [ 'POST' ])
     @login_required
+    @qq_verify_required
     def create_team():
         if current_user.team_id is None:
-            if not is_user_qq_verified(current_user.id):
-                return {'error': 'You need to verify qq first'}, 403
             new_team = Team(id = None, name = f"{current_user.name}'s team", \
                 mod_name = f"{current_user.name}'s mod", invite = secrets.token_hex(8), \
                 profile_pic_id = 2)
@@ -94,9 +93,8 @@ def init_team_api(app):
 
     @bp.route('/<int:team_id>', methods = [ 'POST' ])
     @login_required
+    @qq_verify_required
     def update_team(team_id):
-        if not is_user_qq_verified(current_user.id):
-            return {'error': 'You need to verify qq first'}, 403
         team = Team.query.get(team_id)
         if team is None:
             return { 'error': 'No such team' }, 404
@@ -141,9 +139,8 @@ def init_team_api(app):
     @bp.route('/<int:team_id>/icon', methods = [ 'POST' ])
     @bp.route('/<int:team_id>/profile_pic', methods = [ 'POST' ])
     @login_required
+    @qq_verify_required
     def update_team_icon(team_id):
-        if not is_user_qq_verified(current_user.id):
-            return {'error': 'You need to verify qq first'}, 403
         team = Team.query.get(team_id)
         if team is None:
             return { 'error': 'No such team' }, 404

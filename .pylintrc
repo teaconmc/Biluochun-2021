@@ -7,4 +7,4 @@
 [TYPECHECK]
 ignored-modules=flask_sqlalchemy
 
-generated-members=db.session.add|db.session.commit|db.session.merge|db.session.query|db.session.flush|db.Column|db.ForeignKey|db.Integer|db.LargeBinary|db.Unicode|db.UnicodeText|db.String|db.relationship|form.error
+generated-members=db.session.add|db.session.commit|db.session.merge|db.session.query|db.session.flush|db.session.delete|db.Column|db.ForeignKey|db.Integer|db.LargeBinary|db.Unicode|db.UnicodeText|db.String|db.relationship|form.error

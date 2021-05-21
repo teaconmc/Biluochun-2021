@@ -2,9 +2,12 @@
 QQ Verify
 """
 
+from functools import wraps
+
 import flask
 import requests
 from flask import Blueprint
+from flask_login import current_user
 from sqlalchemy.exc import NoResultFound
 
 from biluochun.form import QQVerify
@@ -52,3 +55,11 @@ def is_user_qq_verified(user: int):
     if not entry:
         return False
     return entry.verified
+
+def qq_verify_required(f):
+    @wraps(f)
+    def qq_verified(*args, **kwargs):
+        if not is_user_qq_verified(current_user.id):
+            return { 'error': 'You need to verify qq first' }, 403
+        return f(args, kwargs)
+    return qq_verified
