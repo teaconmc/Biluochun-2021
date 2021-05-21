@@ -2,7 +2,7 @@ import hashlib
 import os
 
 # List of valid origin domains for CORS purpose.
-CORS_ORIGINS = [ 'localhost' ]
+CORS_ORIGINS = ['localhost']
 
 CORS_ALWAYS_SEND = True
 
@@ -17,7 +17,7 @@ AZURE_OAUTH_CLIENT_ID = None
 AZURE_OAUTH_CLIENT_SECRET = None
 
 # URL that points to your SQL database. SQLite is used here for dev purpose.
-# Major implmenetations such as MySQL and PostgesSQL also works here.
+# Major implementations such as MySQL and PostgesSQL also works here.
 SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.getcwd()}/data/prod.db"
 
 # Hush.
@@ -35,3 +35,6 @@ REMEMBER_COOKIE_SECURE = True
 WEBHOOK_ENABLED = False
 WEBHOOK_URL = ""
 WEBHOOK_SECRET = b""
+
+BOT_SECRET = "HAILUOKEAI"
+BOT_QUERY_ENDPOINT = "http://localhost:1234/uri"

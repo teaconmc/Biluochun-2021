@@ -1,4 +1,4 @@
-Flask
+Flask~=1.1.2
 Flask-Caching
 flask-cors
 Flask-Dance[sqla]>=4.0.0
@@ -7,10 +7,12 @@ flask_sqlalchemy
 Flask-WTF
 gevent
 gunicorn
-Pillow
+Pillow~=8.2.0
 SQLAlchemy==1.4.12
-WTForms
+WTForms~=2.3.3
 httpx
 
 # Dev-only dependencies
 pylint
+
+requests~=2.25.1

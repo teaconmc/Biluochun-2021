@@ -10,8 +10,10 @@ from flask_login import current_user, login_required
 
 from .form import Avatar, TeamInfo
 from .model import Image, Team, db
+from .qq import is_user_qq_verified
 from .util import cleanse_profile_pic, find_team_by_name, team_summary, user_summary
 from .webhook import trigger_webhook
+
 
 def init_team_api(app):
     '''
@@ -25,7 +27,7 @@ def init_team_api(app):
         r.headers['Pragma'] = 'no-cache'
         r.headers['Expires'] = '0'
         return r
-    
+
     @bp.route('/', methods = [ 'GET' ])
     def list_all_teams():
         return jsonify([team_summary(team) for team in Team.query.all()])
@@ -34,6 +36,8 @@ def init_team_api(app):
     @login_required
     def create_team():
         if current_user.team_id is None:
+            if not is_user_qq_verified(current_user):
+                return {'error': 'You need to verify qq first'}, 403
             new_team = Team(id = None, name = f"{current_user.name}'s team", \
                 mod_name = f"{current_user.name}'s mod", invite = secrets.token_hex(8), \
                 profile_pic_id = 2)
@@ -75,6 +79,8 @@ def init_team_api(app):
     @bp.route('/<int:team_id>', methods = [ 'POST' ])
     @login_required
     def update_team(team_id):
+        if not is_user_qq_verified(current_user):
+            return {'error': 'You need to verify qq first'}, 403
         team = Team.query.get(team_id)
         if team is None:
             return { 'error': 'No such team' }, 404
@@ -114,12 +120,14 @@ def init_team_api(app):
         if team is None:
             return { 'error': 'No such team' }, 404
         return redirect(url_for('image.get_image', img_id = team.profile_pic_id))
-    
+
     @bp.route('/<int:team_id>/avatar', methods = [ 'POST' ])
     @bp.route('/<int:team_id>/icon', methods = [ 'POST' ])
     @bp.route('/<int:team_id>/profile_pic', methods = [ 'POST' ])
     @login_required
     def update_team_icon(team_id):
+        if not is_user_qq_verified(current_user):
+            return {'error': 'You need to verify qq first'}, 403
         team = Team.query.get(team_id)
         if team is None:
             return { 'error': 'No such team' }, 404
