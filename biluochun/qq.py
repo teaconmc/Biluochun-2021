@@ -47,7 +47,7 @@ def check_qq_in_group(qq: str):
     return res.status_code == 200
 
 
-def is_user_qq_verified(user):
+def is_user_qq_verified(user: int):
     entry = QQ.query.get(user)
     if not entry:
         return False

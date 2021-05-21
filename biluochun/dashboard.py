@@ -77,7 +77,7 @@ def init_dashboard(app):
     @login_required
     def join_team():
         if current_user.team_id is None:
-            if not is_user_qq_verified(current_user):
+            if not is_user_qq_verified(current_user.id):
                 return {'error': 'You need to verify qq first'}, 403
             form = TeamInvite()
             if form.validate_on_submit():
