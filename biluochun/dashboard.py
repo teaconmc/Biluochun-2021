@@ -154,7 +154,7 @@ def init_dashboard(app):
                    'verify_code': qq.verify_code
                }, 200
 
-    @bp.route('qq', methods=['POST'])
+    @bp.route('/qq', methods=['POST'])
     def set_qq():
         form = QQSet()
         if form.validate_on_submit():
