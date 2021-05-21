@@ -57,11 +57,20 @@ Any endpoints that require authorization will be noted with "Requires authorizat
 
 ### `GET /`
 
-Always gives you `200 OK` with empty JSON Object `{}`. Serves as a simple, crude health check.
+Always gives you `200 OK` with a JSON Object that looks like
 
-### `GET /api/users`
+```json
+{
+  "version": "2"
+}
+```
 
-Retrieves all known participtants. The response is always `200 OK` with a JSON Array that looks like
+This endpoint serves as a simple, crude health check.
+
+### `GET /api/users/?all=false&page=1&size=10`
+
+Retrieves all known participtants. 
+By default, the response is `200 OK` with a JSON Array that looks like
 
 ```json
 [
@@ -72,6 +81,33 @@ Retrieves all known participtants. The response is always `200 OK` with a JSON A
 ```
 
 Array can be empty if no participtants are known to te system (oof).
+
+This endpoint also supports pagination. 
+The following query parameters are available to control pagination behavior:
+
+  - `page`: specify the page index to display, default to `1` i.e. the first page.
+  - `size`: specify the page size (i.e. number of users in a single page), default to `10`.
+
+Pagniated result looks like 
+
+```json
+{
+  "current": 3,
+  "first": 1,
+  "last": 3,
+  "next": null,
+  "prev": 2,
+  "users": [
+    { "id": 2, "name": "TeaCon Participtant C" }
+  ]
+}
+```
+
+If pagination is needed, `page` parameter is REQUIRED. `size` is always OPTIONAL.
+
+The `users` array MAY also be empty if an invalid page number is specified. 
+Example: if there are only 20 users, but a `GET /api/users/?page=3` query is received, then the 
+that array is an empty array.
 
 ### `GET /api/users/<user_id>`
 
@@ -109,9 +145,12 @@ If the participtant has set an avatar, this endpoint will give you `200 OK`, and
 response is `image/png`.
 Otherwise, a `204 No Content` will be returned.
 
-### `GET /api/team`
+### `GET /api/team?all=false&page=1&size=10`
 
-Retrieves all known teams. The response is always `200 OK` with a JSON Array that looks like
+Retrieves all known teams. All "disbanded" teams are excluded. A "disbanded" team is a team without 
+any members.
+
+By default, the response is `200 OK` with a JSON Array that looks like
 
 ```json
 [
@@ -122,6 +161,34 @@ Retrieves all known teams. The response is always `200 OK` with a JSON Array tha
 ```
 
 Array can be empty if no teams are known to te system (oof).
+
+This endpoint also supports pagination. 
+The following query parameters are available to control pagination behavior:
+
+  - `page`: specify the page index to display, default to `1` i.e. the first page.
+  - `size`: specify the page size (i.e. number of teams in a single page), default to `10`.
+  - `all`: If `true`, then return result contains all teams (i.e. bypasses pagination).
+
+Pagniated result looks like 
+
+```json
+{
+  "current": 3,
+  "first": 1,
+  "last": 3,
+  "next": null,
+  "prev": 2,
+  "teams": [
+    { "id": 2, "name": "Team C", "repo": "https://github.com/teaconmc/SlideShow" }
+  ]
+}
+```
+
+If pagination is needed, `page` parameter is REQUIRED. `size` is always OPTIONAL.
+
+The `teams` array MAY be empty if an invalid page number is specified. 
+Example: if there are only 20 teams, but a `GET /api/team?page=3` query is received, then the 
+that array is an empty array.
 
 ### `GET /api/team/<team_id>`
 
@@ -212,7 +279,7 @@ Requires authorization.
 
 If the current user does not belong to a team, `team` field will be `null`.
 
-### `GET /api/profile/avatar/`
+### `GET /api/profile/avatar`
 
 Requires authorization.
 
@@ -228,7 +295,7 @@ Requires authorization.
 
 Synonym of `GET /dashboard/avatar`.
 
-### `POST /api/profile/avatar/`
+### `POST /api/profile/avatar`
 
 Requires authorization.
 
