@@ -83,7 +83,7 @@ def init_dashboard(app):
             if form.validate_on_submit():
                 team = find_team_by_invite(form.invite_code.data)
                 if not team.members:
-                    return { 'error': 'Cannot join disbanded team' }, 403
+                    return {'error': 'Cannot join disbanded team'}, 403
                 current_user.team = team
                 db.session.commit()
                 return {}
@@ -142,9 +142,8 @@ def init_dashboard(app):
     @bp.route('/qq', methods=['GET'])
     @login_required
     def get_qq_state():
-        try:
-            qq = QQ.query.get(current_user)
-        except NoResultFound:
+        qq = QQ.query.get(current_user)
+        if not qq:
             return {
                        'error': 'No qq provided'
                    }, 404
@@ -159,6 +158,9 @@ def init_dashboard(app):
         form = QQSet()
         if form.validate_on_submit():
             if check_qq_in_group(form.qq.data):
+                old_entry = QQ.query.get(current_user)
+                if old_entry:
+                    db.session.delete(old_entry)
                 new_qq = QQ()
                 new_qq.qq = form.qq.data
                 new_qq.verified = False

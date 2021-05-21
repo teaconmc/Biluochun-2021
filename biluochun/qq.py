@@ -48,8 +48,7 @@ def check_qq_in_group(qq: str):
 
 
 def is_user_qq_verified(user):
-    try:
-        entry = QQ.query.get(user)
-    except NoResultFound:
+    entry = QQ.query.get(user)
+    if not entry:
         return False
     return entry.verified
