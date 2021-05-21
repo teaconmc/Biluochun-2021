@@ -15,7 +15,7 @@ BOT_QUERY_ENDPOINT = ""
 
 
 def init_qq_api(app):
-    bp = Blueprint('team', __name__, url_prefix='/api/qq')
+    bp = Blueprint('qq', __name__, url_prefix='/api/qq')
 
     @bp.route('/verify', methods=['POST'])
     def verify_qq():
