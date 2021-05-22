@@ -142,7 +142,7 @@ def init_dashboard(app):
     @bp.route('/qq', methods=['GET'])
     @login_required
     def get_qq_state():
-        qq = QQ.query.get(current_user)
+        qq = QQ.query.get(current_user.id)
         if not qq:
             return {
                        'error': 'No qq provided'
@@ -158,7 +158,7 @@ def init_dashboard(app):
         form = QQSet()
         if form.validate_on_submit():
             if check_qq_in_group(form.qq.data):
-                old_entry = QQ.query.get(current_user)
+                old_entry = QQ.query.get(current_user.id)
                 if old_entry:
                     db.session.delete(old_entry)
                 new_qq = QQ()
