@@ -32,7 +32,7 @@ def init_qq_api(app):
         form = QQVerify()
         if form.validate_on_submit():
             try:
-                entry = QQ.query.filter(QQ.qq == form.qq.data and QQ.verify_code == form.code.data).one()
+                entry = QQ.query.filter(QQ.qq == form.qq.data).filter(QQ.verify_code == form.code.data).one()
             except NoResultFound:
                 # No correspond qq entry
                 return {}, 404
