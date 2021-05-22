@@ -145,7 +145,7 @@ If the participtant has set an avatar, this endpoint will give you `200 OK`, and
 response is `image/png`.
 Otherwise, a `204 No Content` will be returned.
 
-### `GET /api/team?all=false&page=1&size=10`
+### `GET /api/team?detailed=false&all=false&page=1&size=10`
 
 Retrieves all known teams. All "disbanded" teams are excluded. A "disbanded" team is a team without 
 any members.
@@ -161,6 +161,9 @@ By default, the response is `200 OK` with a JSON Array that looks like
 ```
 
 Array can be empty if no teams are known to te system (oof).
+
+Optionally, if query parameter `?detailed=true` is given, then each JSON Object in the returned 
+JSON Array will be in form of what you get in `GET /api/team/<team_id>`.
 
 This endpoint also supports pagination. 
 The following query parameters are available to control pagination behavior:
@@ -202,7 +205,10 @@ be `200 OK` with a JSON Object that looks like
   "mod_name": "TeamBCraft",
   "repo": "https://github.com/teaconmc/ChromeBall",
   "desc": "Lorem ipsum",
-  "invite": "0123456789abcedf"
+  "invite": "0123456789abcedf",
+  "members": [
+    { "id": 0, "name": "TeaCon Participtant A" }
+  ]
 }
 ```
 

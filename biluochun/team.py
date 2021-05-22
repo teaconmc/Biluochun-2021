@@ -33,6 +33,7 @@ def init_team_api(app):
         # SELECT DISTINCT team.* FROM team
         #   JOIN user ON team.id = user.team_id
         #   ORDER BY team.id;
+        detailed = request.args.get('detailed', False, type = bool)
         teams = Team.query.distinct().join(Team.members).order_by(Team.id)
         if 'page' in request.args:
             page_index = request.args.get('page', 1, type = int)
@@ -44,9 +45,9 @@ def init_team_api(app):
                 'last': page.pages,
                 'prev': page.prev_num,
                 'next': page.next_num,
-                'teams': [team_summary(team) for team in page.items]
+                'teams': [team_summary(team, detailed=detailed) for team in page.items]
             }
-        return jsonify([team_summary(team) for team in teams])
+        return jsonify([team_summary(team, detailed=detailed) for team in teams])
 
     @bp.route('/', methods = [ 'POST' ])
     @login_required

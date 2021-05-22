@@ -39,6 +39,7 @@ def team_summary(team, detailed = False, invitation = False):
     if detailed:
         info['desc'] = team.description
         info['disbanded'] = not bool(team.members)
+        info['members'] = [user_summary(u) for u in team.members]
     if invitation:
         info['invite'] = team.invite
     return info
