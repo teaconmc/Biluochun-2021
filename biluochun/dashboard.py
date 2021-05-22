@@ -157,7 +157,7 @@ def init_dashboard(app):
     def set_qq():
         form = QQSet()
         if form.validate_on_submit():
-            if QQ.query(exists().where(QQ.qq == form.qq.data)).scalar():
+            if QQ.query.filter_by(qq=form.qq.data).first():
                 return {'error': '这个 QQ 已经被他人占用'}, 409
             if check_qq_in_group(form.qq.data):
                 old_entry = QQ.query.get(current_user.id)
