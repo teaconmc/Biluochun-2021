@@ -7,7 +7,7 @@ import secrets
 from flask import Blueprint, redirect, url_for
 from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
 from flask_login import current_user, login_required, logout_user
-from sqlalchemy.exc import NoResultFound
+from sqlalchemy.sql import exists
 
 from .form import Avatar, TeamInvite, UserInfo, QQSet
 from .model import Image, OAuth, Team, db, QQ
@@ -157,6 +157,8 @@ def init_dashboard(app):
     def set_qq():
         form = QQSet()
         if form.validate_on_submit():
+            if QQ.query(exists().where(QQ.qq == form.qq.data)).scalar():
+                return {'error': '这个 QQ 已经被他人占用'}, 409
             if check_qq_in_group(form.qq.data):
                 old_entry = QQ.query.get(current_user.id)
                 if old_entry:
@@ -171,7 +173,7 @@ def init_dashboard(app):
                 return {}, 200
             else:
                 return {
-                           'error': 'The qq is not in the group'
+                           'error': '请先加入选手群'
                        }, 403
         else:
             return {
