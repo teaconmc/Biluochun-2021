@@ -60,6 +60,6 @@ def qq_verify_required(f):
     @wraps(f)
     def qq_verified(*args, **kwargs):
         if not is_user_qq_verified(current_user.id):
-            return { 'error': 'You need to verify qq first' }, 403
+            return { 'error': '需要先验证 QQ 号' }, 403
         return f(args, kwargs)
     return qq_verified
