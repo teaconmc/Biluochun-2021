@@ -162,6 +162,8 @@ def init_dashboard(app):
             if check_qq_in_group(form.qq.data):
                 old_entry = QQ.query.get(current_user.id)
                 if old_entry:
+                    if old_entry.verified:
+                        return {'error': '你已经绑定过 QQ 了'}, 403
                     db.session.delete(old_entry)
                 new_qq = QQ()
                 new_qq.qq = form.qq.data
