@@ -32,15 +32,13 @@ def init_qq_api(app):
         form = QQVerify()
         if form.validate_on_submit():
             try:
-                entry = QQ.query.filter(QQ.qq == form.qq.data).one()
+                entry = QQ.query.filter(QQ.qq == form.qq.data and QQ.verify_code == form.code.data).one()
             except NoResultFound:
                 # No correspond qq entry
                 return {}, 404
-            if entry.verify_code == form.code.data:
-                entry.verified = True
-                db.session.commit()
-                return {}, 200
-            return {}, 403
+            entry.verified = True
+            db.session.commit()
+            return {}, 200
         else:
             return {
                        'error': 'Form contains error. Check "details" field for more information.',
