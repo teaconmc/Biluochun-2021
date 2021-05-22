@@ -27,7 +27,7 @@ def init_qq_api(app):
     @bp.route('/verify', methods=['POST'])
     def verify_qq():
         if flask.request.headers.get("Authorization") != BOT_SECRET:
-            return 401
+            return {}, 401
 
         form = QQVerify()
         if form.validate_on_submit():
