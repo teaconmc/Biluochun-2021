@@ -115,6 +115,7 @@ def init_dashboard(app):
     @bp.route('/avatar', methods=['POST'])
     @bp.route('/profile_pic', methods=['POST'])
     @login_required
+    @qq_verify_required
     def update_avatar():
         form = Avatar()
         if form.validate_on_submit():
