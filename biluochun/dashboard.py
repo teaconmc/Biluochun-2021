@@ -168,6 +168,7 @@ def init_dashboard(app):
                 new_qq.verify_code = secrets.token_hex(8)
                 db.session.add(new_qq)
                 db.session.commit()
+                return {}, 200
             else:
                 return {
                            'error': 'The qq is not in the group'
