@@ -164,7 +164,7 @@ def init_dashboard(app):
                 new_qq = QQ()
                 new_qq.qq = form.qq.data
                 new_qq.verified = False
-                new_qq.user_id = current_user
+                new_qq.user_id = current_user.id
                 new_qq.verify_code = secrets.token_hex(8)
                 db.session.add(new_qq)
                 db.session.commit()
