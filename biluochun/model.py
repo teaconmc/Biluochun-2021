@@ -100,7 +100,7 @@ class Blacklist(db.Model):
 
 class QQ(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey(User.id), primary_key=True)
-    qq = db.Column(db.String(16), nullable=False, unique=True)
+    qq = db.Column(db.String(16), nullable=False)
     verified = db.Column(db.Boolean, default=False)
     verify_code = db.Column(db.String(64), nullable=False)
 

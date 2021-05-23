@@ -1,6 +1,6 @@
-'''
+"""
 Defines web form structures used by Biluochun.
-'''
+"""
 
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField, FileRequired
@@ -48,6 +48,14 @@ def validate_username(form, field):
     existing_user = User.query.filter_by(name=field.data).first()
     if existing_user is not None and existing_user != target_user:
         raise ValidationError(f"Username #{field.data} has been used")
+
+
+def validate_qq(form, field):
+    if field.data is None:
+        raise ValidationError("QQ cannot be empty")
+    for ch in field.data:
+        if ord(ch) > ord('9') or ord(ch) < ord('0'):
+            raise ValidationError("Invalid character '{}'".format(ch))
 
 
 class Avatar(FlaskForm):
@@ -109,7 +117,7 @@ class QQVerify(FlaskForm):
     class Meta:
         csrf = False
 
-    qq = StringField('qq', validators=[Length(min=1, max=128)])
+    qq = StringField('qq', validators=[Length(min=1, max=128), validate_qq])
     code = StringField('code', validators=[Length(min=1, max=128)])
 
 
@@ -117,4 +125,4 @@ class QQSet(FlaskForm):
     class Meta:
         csrf = False
 
-    qq = StringField('qq', validators=[Length(min=1, max=20)])
+    qq = StringField('qq', validators=[Length(min=1, max=20), validate_qq])

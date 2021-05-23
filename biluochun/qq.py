@@ -27,18 +27,17 @@ def init_qq_api(app):
     @bp.route('/verify', methods=['POST'])
     def verify_qq():
         if flask.request.headers.get("Authorization") != BOT_SECRET:
-            return 401
+            return {}, 401
 
         form = QQVerify()
         if form.validate_on_submit():
             try:
-                entry = QQ.query.filter(QQ.qq == form.qq.data).one()
+                entry = QQ.query.filter(QQ.qq == form.qq.data).filter(QQ.verify_code == form.code.data).one()
             except NoResultFound:
                 # No correspond qq entry
-                return {}, 200
-            if entry.verify_code == form.code.data:
-                entry.verified = True
-                db.session.commit()
+                return {}, 404
+            entry.verified = True
+            db.session.commit()
             return {}, 200
         else:
             return {
@@ -60,10 +59,12 @@ def is_user_qq_verified(user: int):
         return False
     return entry.verified
 
+
 def qq_verify_required(f):
     @wraps(f)
     def qq_verified(*args, **kwargs):
         if not is_user_qq_verified(current_user.id):
-            return { 'error': '需要先验证 QQ 号' }, 403
+            return {'error': '需要先验证 QQ 号'}, 403
         return f(*args, **kwargs)
+
     return qq_verified

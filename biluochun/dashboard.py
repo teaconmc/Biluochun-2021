@@ -7,7 +7,6 @@ import secrets
 from flask import Blueprint, redirect, url_for
 from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
 from flask_login import current_user, login_required, logout_user
-from sqlalchemy.sql import exists
 
 from .form import Avatar, TeamInvite, UserInfo, QQSet
 from .model import Image, OAuth, Team, db, QQ
@@ -157,18 +156,19 @@ def init_dashboard(app):
     def set_qq():
         form = QQSet()
         if form.validate_on_submit():
-            if QQ.query.filter_by(qq=form.qq.data).first():
-                return {'error': '这个 QQ 已经被他人占用'}, 409
             if check_qq_in_group(form.qq.data):
                 old_entry = QQ.query.get(current_user.id)
                 if old_entry:
-                    db.session.delete(old_entry)
-                new_qq = QQ()
-                new_qq.qq = form.qq.data
-                new_qq.verified = False
-                new_qq.user_id = current_user.id
-                new_qq.verify_code = secrets.token_hex(8)
-                db.session.add(new_qq)
+                    if old_entry.verified:
+                        return {'error': '你已经绑定过 QQ 了'}, 403
+                    else:
+                        db.session.delete(old_entry)
+                new_entry = QQ()
+                new_entry.qq = form.qq.data
+                new_entry.verified = False
+                new_entry.user_id = current_user.id
+                new_entry.verify_code = secrets.token_hex(8)
+                db.session.add(new_entry)
                 db.session.commit()
                 return {}, 200
             else:
@@ -177,7 +177,7 @@ def init_dashboard(app):
                        }, 403
         else:
             return {
-                       'error': 'Form contains error. Check "details" field for more information.',
+                       'error': '请填写正确的 QQ 号',
                        'details': form.errors
                    }, 400
 
