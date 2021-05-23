@@ -16,3 +16,5 @@ httpx
 pylint
 
 requests~=2.25.1
+PyMySQL[rsa]==1.0.2
+cryptography
