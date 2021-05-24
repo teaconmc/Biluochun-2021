@@ -3,7 +3,8 @@ Defines /api/image endpoints series.
 '''
 from io import BytesIO
 
-from flask import Blueprint, redirect, send_file
+from flask import Blueprint, send_file
+import PIL
 
 from .model import Image
 
@@ -19,9 +20,10 @@ def init_image(app):
         raw = Image.query.get(img_id)
         if raw is None:
             return { "error": "Not found" }, 404
-        img = Image.open(raw)
+        img = PIL.Image.open(BytesIO(raw.data))
         jpg = BytesIO()
         img.save(jpg, format = 'jpeg')
+        jpg.seek(0)
         return send_file(jpg, mimetype = 'image/jpeg')
     
     @bp.after_request
