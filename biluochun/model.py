@@ -20,12 +20,12 @@ class Team(db.Model):
     A team describes a base unit of participation.
     """
     id = db.Column(db.Integer, Identity(start=1), primary_key=True)
-    name = db.Column(db.Unicode(128), nullable=False, unique=True)
-    mod_name = db.Column(db.Unicode(128), nullable=False, unique=True)
+    name = db.Column(db.Unicode(128, collation="utf8mb4", convert_unicode=True), nullable=False, unique=True)
+    mod_name = db.Column(db.Unicode(128, collation="utf8mb4", convert_unicode=True), nullable=False, unique=True)
     invite = db.Column(db.String(16), nullable=False, unique=True)
     profile_pic_id = db.Column(db.Integer, db.ForeignKey("image.id"), nullable=False)
     profile_pic = db.relationship('Image')
-    description = db.Column(db.UnicodeText)
+    description = db.Column(db.UnicodeText(collation="utf8mb4", convert_unicode=True))
     repo = db.Column(db.Text)
     members = db.relationship('User', back_populates="team", lazy=True)
 
@@ -39,7 +39,7 @@ class User(db.Model, flask_login.UserMixin):
     """
     id = db.Column(db.Integer, Identity(start=1), primary_key=True)
     ms_id = db.Column(db.String(16), nullable=False, unique=True)
-    name = db.Column(db.Unicode(128), nullable=False, unique=True)
+    name = db.Column(db.Unicode(128, collation="utf8mb4", convert_unicode=True), nullable=False, unique=True)
     profile_pic_id = db.Column(db.Integer, db.ForeignKey("image.id"), nullable=False)
     profile_pic = db.relationship('Image')
     team_id = db.Column(db.Integer, db.ForeignKey("team.id"))
