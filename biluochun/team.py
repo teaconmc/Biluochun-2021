@@ -2,6 +2,7 @@
 Defines /api/team endpoints series.
 '''
 
+from datetime import datetime, timezone
 import secrets
 
 from flask import Blueprint, redirect, request, url_for
@@ -53,6 +54,12 @@ def init_team_api(app):
     @login_required
     @qq_verify_required
     def create_team():
+        # TODO Make it configurable
+        # 12:00 at 2021/07/26 CST, converted to UTC
+        deadline = datetime(2021, 7, 26, hour = 4, tzinfo = timezone.utc) 
+        right_now = datetime.now(timezone.utc)
+        if right_now > deadline:
+            return { 'error': 'Deadline has passed' }, 403
         if current_user.team_id is None:
             new_team = Team(id = None, name = f"{current_user.name}'s team", \
                 mod_name = f"{current_user.name}'s mod", invite = secrets.token_hex(8), \
