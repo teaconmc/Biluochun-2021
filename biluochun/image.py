@@ -17,14 +17,10 @@ def init_image(app):
 
     @bp.route('/<int:img_id>')
     def get_image(img_id):
-        raw = Image.query.get(img_id)
-        if raw is None:
+        img = Image.query.get(img_id)
+        if img is None:
             return { "error": "Not found" }, 404
-        img = PIL.Image.open(BytesIO(raw.data))
-        jpg = BytesIO()
-        img.save(jpg, format = 'jpeg')
-        jpg.seek(0)
-        return send_file(jpg, mimetype = 'image/jpeg')
+        return send_file(BytesIO(img.data), mimetype = 'image/png')
     
     @bp.after_request
     def setup_cache_policy(r):
